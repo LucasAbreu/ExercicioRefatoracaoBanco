@@ -1,5 +1,7 @@
 package com.bcopstein.ExercicioRefatoracaoBanco;
+import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,12 +34,19 @@ public class TelaOperacoes {
 
 	private TextField tfValorOperacao;
 	private TextField tfSaldo;
+	
+	//***MUDANÇAS***\\
+	private Label cat;
+	//private String categoria;
+	private double totalSacadoHoje;
+	//***MUDANÇAS***\\
 
 	public TelaOperacoes(Stage mainStage, Scene telaEntrada, Conta conta, List<Operacao> operacoes) { // Tirar esse parâmetro																					// conta
 		this.mainStage = mainStage;
 		this.cenaEntrada = telaEntrada;
 		this.conta = conta;
 		this.operacoes = operacoes;
+		totalSacadoHoje = calculaValorSacadoHoje();
 	}
 
 	public Scene getTelaOperacoes() {
@@ -55,7 +64,7 @@ public class TelaOperacoes {
         String categoria = "Categoria: "+conta.getStrStatus();
         String limRetDiaria = "Limite retirada diaria: "+conta.getLimRetiradaDiaria();
         
-        Label cat = new Label(categoria);
+        cat = new Label(categoria);
         grid.add(cat, 0, 1);
 
         Label lim = new Label(limRetDiaria);
@@ -132,7 +141,10 @@ public class TelaOperacoes {
 				alert.setContentText("Valor inválido para operacao de crédito!!");
 
 				alert.showAndWait();
-        	}        	
+        	}
+        	//***MUDANÇAS***\\
+        	cat.setText("Categoria: "+conta.getStrStatus());
+        	//***MUDANÇAS***\\
         });
         
         btnDebito.setOnAction(e->{
@@ -141,6 +153,12 @@ public class TelaOperacoes {
           	  if (valor < 0.0 || valor > conta.getSaldo()) {
           		  throw new NumberFormatException("Saldo insuficiente");
           	  }
+          	  //***MUDANÇAS***\\
+          	  if(valor+totalSacadoHoje > conta.getLimRetiradaDiaria()) {
+          		  throw new NumberFormatException("O valor :"+valor+" ultrapassa seu limite de saque do dia"
+          				  +"\nO total sacado hoje foi dê :"+totalSacadoHoje
+          				  +"\nSeu limite de saque é dê :"+conta.getLimRetiradaDiaria());
+          	  }//***MUDANÇAS***\\
           	  conta.retirada(valor);
         	  GregorianCalendar date = new GregorianCalendar();
         	  Operacao op = new Operacao(
@@ -163,10 +181,15 @@ public class TelaOperacoes {
   				Alert alert = new Alert(AlertType.WARNING);
   				alert.setTitle("Valor inválido !!");
   				alert.setHeaderText(null);
-  				alert.setContentText("Valor inválido para operacao de débito!");
+  				alert.setContentText(ex.getMessage());//***MUDANÇAS***\\
 
   				alert.showAndWait();
-          	}        	
+          	}      
+        	//***MUDANÇAS***\\
+        	cat.setText("Categoria: "+conta.getStrStatus());
+        	totalSacadoHoje = calculaValorSacadoHoje();
+        	System.out.println(totalSacadoHoje);
+        	//***MUDANÇAS***\\
         });
 
         btnVoltar.setOnAction(e->{
@@ -175,6 +198,16 @@ public class TelaOperacoes {
 		
         cenaOperacoes = new Scene(grid);
         return cenaOperacoes;
+	}
+	private double calculaValorSacadoHoje() {
+		GregorianCalendar calen = new GregorianCalendar();
+		int diaHoje = calen.get(Calendar.DAY_OF_MONTH);
+		int mesHoje = calen.get(Calendar.MONTH+1); 
+		int anoHoje = calen.get(Calendar.YEAR);
+		double valorSacadoHoje = operacoes.stream()
+				.filter((p) -> p.getNumeroConta()==conta.getNumero() && p.getAno()==anoHoje && p.getMes()==mesHoje && p.getDia()==diaHoje && p.getTipoOperacao()==1.0)
+				.mapToDouble( (p) -> p.getValorOperacao()).sum();
+		return valorSacadoHoje;
 	}
 
 }
