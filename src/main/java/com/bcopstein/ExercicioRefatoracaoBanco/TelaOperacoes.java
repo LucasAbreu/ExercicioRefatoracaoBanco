@@ -189,7 +189,6 @@ public class TelaOperacoes {
 				alert.setTitle("Conta inválida !!");
 				alert.setHeaderText(null);
 				alert.setContentText("Número de conta inválido!!");
-
 				alert.showAndWait();
 			}
 		});
@@ -208,9 +207,9 @@ public class TelaOperacoes {
 		int mesHoje = calen.get(Calendar.MONTH + 1);
 		int anoHoje = calen.get(Calendar.YEAR);
 		double valorSacadoHoje = operacoes.stream()
-				.filter((p) -> p.getNumeroConta() == conta.getNumero() && p.getAno() == anoHoje && p.getMes() == mesHoje
-						&& p.getDia() == diaHoje && p.getTipoOperacao() == 1.0)
-				.mapToDouble((p) -> p.getValorOperacao()).sum();
+				.filter((op) -> op.getNumeroConta() == conta.getNumero() && op.getAno() == anoHoje && op.getMes() == mesHoje
+						&& op.getDia() == diaHoje && op.getTipoOperacao() == 1.0)
+				.mapToDouble((op) -> op.getValorOperacao()).sum();
 		return valorSacadoHoje;
 	}
 

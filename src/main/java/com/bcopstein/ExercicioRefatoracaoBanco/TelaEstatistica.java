@@ -1,6 +1,11 @@
 package com.bcopstein.ExercicioRefatoracaoBanco;
 
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
+
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -64,7 +69,7 @@ public class TelaEstatistica {
 		
 		String mes = "Mes: ";
 		lbMes = new Label(mes);
-		lbMes.setMinWidth(lbMes.USE_PREF_SIZE);
+		lbMes.setMinWidth(Label.USE_PREF_SIZE);
 		grid.add(lbMes, 2, 1);
 		
 		datePicker = new DatePicker();
@@ -72,7 +77,7 @@ public class TelaEstatistica {
 		
 		String saldoMedio = "Saldo Medio: ";
 		lbSaldo = new Label(saldoMedio);
-		lbSaldo.setMinWidth(lbMes.USE_PREF_SIZE);
+		lbSaldo.setMinWidth(Label.USE_PREF_SIZE);
 		grid.add(lbSaldo, 0, 2);
 		
 		tfSaldo = new TextField();
@@ -81,7 +86,7 @@ public class TelaEstatistica {
 		
 		String totDeposito = "Total Deposito: ";
 		lbDeposito = new Label(totDeposito);
-		lbDeposito.setMinWidth(lbMes.USE_PREF_SIZE);
+		lbDeposito.setMinWidth(Label.USE_PREF_SIZE);
 		grid.add(lbDeposito, 0, 3);
 		
 		tfDeposito = new TextField();
@@ -90,7 +95,7 @@ public class TelaEstatistica {
 		
 		String totRetirado = "Total Retirado: ";
 		lbRetirado = new Label(totRetirado);
-		lbRetirado.setMinWidth(lbMes.USE_PREF_SIZE);
+		lbRetirado.setMinWidth(Label.USE_PREF_SIZE);
 		grid.add(lbRetirado, 0, 4);
 		
 		tfRetirada = new TextField();
@@ -106,5 +111,32 @@ public class TelaEstatistica {
 		
 		cenaEstatistica = new Scene(grid);
 		return cenaEstatistica;
+	}
+	
+	public double calculaSaldoMedioNoMes(List<Operacao> operacao,Conta conta) {
+		GregorianCalendar calen = new GregorianCalendar();
+		int diaHoje = calen.get(Calendar.DAY_OF_MONTH);
+		int mesHoje = calen.get(Calendar.MONTH + 1);
+		int anoHoje = calen.get(Calendar.YEAR);
+		
+		List<Operacao> opsMesAnterior = operacao.stream().
+				filter( (p) -> p.getAno() == anoHoje && p.getMes() == (mesHoje-1) )
+				.collect(Collectors.toList());
+		
+		List<Double> saldosDiarios = new LinkedList<>();//Poderia ser um array de 30,já que consideramos todos os meses com 30 dias
+		
+		for(int i=1; i<31; i++) { // for para cada "dia do mes anterior"
+			int dia = i;
+			double allDebitThisDay = opsMesAnterior.stream().filter((op) -> op.getDia()== dia && op.getTipoOperacao()==0)
+					.mapToDouble((op) -> op.getValorOperacao()).sum();
+			double allCreditThisDay = opsMesAnterior.stream().filter((op) -> op.getDia()== dia && op.getTipoOperacao()==1)
+					.mapToDouble((op) -> op.getValorOperacao()).sum();
+			
+			// Este if me garante que eu colocarei na lista, de saldos diarios, somente dias em que ouve mudança no saldo
+			if(allDebitThisDay !=0 || allCreditThisDay != 0 ) {saldosDiarios.add(allDebitThisDay+allCreditThisDay);}
+		}
+		//Este valor sera o saldo medio no primeiro dia do mes atual
+		double saldoMedioMesAnterior = (saldosDiarios.stream().mapToDouble(saldo -> saldo.doubleValue()).sum())/saldosDiarios.size();
+		return 0;
 	}
 }
