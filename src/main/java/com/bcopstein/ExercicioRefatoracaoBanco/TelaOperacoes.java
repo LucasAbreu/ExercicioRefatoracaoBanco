@@ -121,7 +121,7 @@ public class TelaOperacoes {
 				conta.deposito(valor);
 				GregorianCalendar date = new GregorianCalendar();
 				Operacao op = new Operacao(date.get(GregorianCalendar.DAY_OF_MONTH),
-						date.get(GregorianCalendar.MONTH + 1), date.get(GregorianCalendar.YEAR),
+						((int)date.get(GregorianCalendar.MONTH))+1, date.get(GregorianCalendar.YEAR),
 						date.get(GregorianCalendar.HOUR), date.get(GregorianCalendar.MINUTE),
 						date.get(GregorianCalendar.SECOND), conta.getNumero(), conta.getStatus(), valor, 0);
 				operacoes.add(op);
@@ -155,7 +155,7 @@ public class TelaOperacoes {
 				conta.retirada(valor);
 				GregorianCalendar date = new GregorianCalendar();
 				Operacao op = new Operacao(date.get(GregorianCalendar.DAY_OF_MONTH),
-						date.get(GregorianCalendar.MONTH + 1), date.get(GregorianCalendar.YEAR),
+						((int)date.get(GregorianCalendar.MONTH))+1, date.get(GregorianCalendar.YEAR),
 						date.get(GregorianCalendar.HOUR), date.get(GregorianCalendar.MINUTE),
 						date.get(GregorianCalendar.SECOND), conta.getNumero(), conta.getStatus(), valor, 1);
 				// Esta adicionando em duas listas (resolver na camada de negocio)
