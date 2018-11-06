@@ -55,6 +55,7 @@ public class TelaEstatistica {
 		grid.add(lbConta, 0, 1);
 		
 		tfConta = new TextField();
+		tfConta.setEditable(false);
 		grid.add(tfConta, 1, 1);
 		
 		String mes = "Mes: ";
@@ -66,6 +67,7 @@ public class TelaEstatistica {
 		grid.add(lbSaldo, 0, 2);
 		
 		tfSaldo = new TextField();
+		tfSaldo.setEditable(false);
 		grid.add(tfSaldo, 1, 2);
 		
 		String totDeposito = "Total Deposito: ";
@@ -73,6 +75,7 @@ public class TelaEstatistica {
 		grid.add(lbDeposito, 0, 3);
 		
 		tfDeposito = new TextField();
+		tfDeposito.setEditable(false);
 		grid.add(tfDeposito, 1, 3);
 		
 		String totRetirado = "Total Retirado: ";
@@ -80,6 +83,7 @@ public class TelaEstatistica {
 		grid.add(lbRetirado, 0, 4);
 		
 		tfRetirada = new TextField();
+		tfRetirada.setEditable(false);
 		grid.add(tfRetirada, 1, 4);
 		
 		Button btnVoltar = new Button("Voltar");
