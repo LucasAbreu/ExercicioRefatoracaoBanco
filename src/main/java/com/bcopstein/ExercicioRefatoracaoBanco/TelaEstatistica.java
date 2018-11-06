@@ -50,11 +50,12 @@ public class TelaEstatistica {
 		grid.setPadding(new Insets(25, 25, 25, 25));
 		//grid.setGridLinesVisible(true);
 		
-		String conta = "Conta: ";
-		lbConta = new Label(conta);
+		String c = "Conta: ";
+		lbConta = new Label(c);
 		grid.add(lbConta, 0, 1);
 		
 		tfConta = new TextField();
+		tfConta.setText(String.valueOf(conta.getNumero()));
 		tfConta.setEditable(false);
 		grid.add(tfConta, 1, 1);
 		
