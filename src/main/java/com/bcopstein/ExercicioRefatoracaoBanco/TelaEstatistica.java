@@ -18,6 +18,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.scene.control.DatePicker;
 
 public class TelaEstatistica {
 	private Stage mainStage;
@@ -34,6 +35,7 @@ public class TelaEstatistica {
 	private TextField tfDeposito;
 	private Label lbRetirado;
 	private TextField tfRetirada;
+	private DatePicker datePicker;
 
 	public TelaEstatistica(Stage mainStage, Scene telaOperacoes, Conta conta, List<Operacao> operacoes) {
 		this.mainStage = mainStage;
@@ -44,6 +46,7 @@ public class TelaEstatistica {
 
 	public Scene getTelaEstatistica() {
 		GridPane grid = new GridPane();
+		//grid.setMinSize(grid.USE_PREF_SIZE, grid.USE_PREF_SIZE);
 		grid.setAlignment(Pos.CENTER);
 		grid.setHgap(10);
 		grid.setVgap(10);
@@ -61,10 +64,15 @@ public class TelaEstatistica {
 		
 		String mes = "Mes: ";
 		lbMes = new Label(mes);
+		lbMes.setMinWidth(lbMes.USE_PREF_SIZE);
 		grid.add(lbMes, 2, 1);
+		
+		datePicker = new DatePicker();
+		grid.add(datePicker, 3, 1);
 		
 		String saldoMedio = "Saldo Medio: ";
 		lbSaldo = new Label(saldoMedio);
+		lbSaldo.setMinWidth(lbMes.USE_PREF_SIZE);
 		grid.add(lbSaldo, 0, 2);
 		
 		tfSaldo = new TextField();
@@ -73,6 +81,7 @@ public class TelaEstatistica {
 		
 		String totDeposito = "Total Deposito: ";
 		lbDeposito = new Label(totDeposito);
+		lbDeposito.setMinWidth(lbMes.USE_PREF_SIZE);
 		grid.add(lbDeposito, 0, 3);
 		
 		tfDeposito = new TextField();
@@ -81,6 +90,7 @@ public class TelaEstatistica {
 		
 		String totRetirado = "Total Retirado: ";
 		lbRetirado = new Label(totRetirado);
+		lbRetirado.setMinWidth(lbMes.USE_PREF_SIZE);
 		grid.add(lbRetirado, 0, 4);
 		
 		tfRetirada = new TextField();
