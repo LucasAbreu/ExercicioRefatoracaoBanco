@@ -2,7 +2,6 @@ package com.bcopstein.ExercicioRefatoracaoBanco;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -204,7 +203,7 @@ public class TelaOperacoes {
 	private double calculaValorSacadoHoje() {
 		GregorianCalendar calen = new GregorianCalendar();
 		int diaHoje = calen.get(Calendar.DAY_OF_MONTH);
-		int mesHoje = calen.get(Calendar.MONTH + 1);
+		int mesHoje = calen.get(Calendar.MONTH)+1;
 		int anoHoje = calen.get(Calendar.YEAR);
 		double valorSacadoHoje = operacoes.stream()
 				.filter((op) -> op.getNumeroConta() == conta.getNumero() && op.getAno() == anoHoje && op.getMes() == mesHoje
