@@ -1,5 +1,6 @@
 package com.bcopstein.ExercicioRefatoracaoBanco;
 
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.LinkedList;
@@ -110,6 +111,7 @@ public class TelaEstatistica {
 		});
 		
 		cenaEstatistica = new Scene(grid);
+		this.calculaSaldoMedioNoMes(operacoes, conta);
 		return cenaEstatistica;
 	}
 	
@@ -120,23 +122,46 @@ public class TelaEstatistica {
 		int anoHoje = calen.get(Calendar.YEAR);
 		
 		List<Operacao> opsMesAnterior = operacao.stream().
-				filter( (p) -> p.getAno() == anoHoje && p.getMes() == (mesHoje-1) )
-				.collect(Collectors.toList());
+				filter( (p) -> (p.getNumeroConta() == conta.getNumero() && ((p.getAno() < anoHoje) || ( p.getAno() == anoHoje && p.getMes() < ( 9 ) ))))
+				.collect(Collectors.toList()); // busca todas operaçoes até o mes anterior ao selecionado
 		
-		List<Double> saldosDiarios = new LinkedList<>();//Poderia ser um array de 30,já que consideramos todos os meses com 30 dias
+		List<Operacao> opsMesAtual = operacao.stream().
+				filter( (p) -> (p.getNumeroConta() == conta.getNumero() && ( p.getAno() == anoHoje && p.getMes() == ( 9 ) )))
+				.collect(Collectors.toList()); // busca todas operaçoes no mes selecionado
 		
-		for(int i=1; i<31; i++) { // for para cada "dia do mes anterior"
-			int dia = i;
-			double allDebitThisDay = opsMesAnterior.stream().filter((op) -> op.getDia()== dia && op.getTipoOperacao()==0)
-					.mapToDouble((op) -> op.getValorOperacao()).sum();
-			double allCreditThisDay = opsMesAnterior.stream().filter((op) -> op.getDia()== dia && op.getTipoOperacao()==1)
-					.mapToDouble((op) -> op.getValorOperacao()).sum();
-			
-			// Este if me garante que eu colocarei na lista, de saldos diarios, somente dias em que ouve mudança no saldo
-			if(allDebitThisDay !=0 || allCreditThisDay != 0 ) {saldosDiarios.add(allDebitThisDay+allCreditThisDay);}
+		double saldoMesAnterior = 0; // Calcula o saldo da conta até o mes anterior ao selecionado
+		for( Operacao op : opsMesAnterior ) {
+			if( op.getTipoOperacao() == 0 )
+				saldoMesAnterior += op.getValorOperacao();
+			else
+				saldoMesAnterior -= op.getValorOperacao();
 		}
-		//Este valor sera o saldo medio no primeiro dia do mes atual
-		double saldoMedioMesAnterior = (saldosDiarios.stream().mapToDouble(saldo -> saldo.doubleValue()).sum())/saldosDiarios.size();
+		
+//		System.out.println(opsMesAnterior);
+//		System.out.println(opsMesAnterior.size());
+//		System.out.println(saldoMesAnterior);
+		
+		double debitosDoDia[] = new double[31];
+		double creditosDoDia[] = new double[31];
+		for(int i=1; i<=30; i++) { // Armazena todos debitos e creditos em cada ponto do array
+			int dia = i;
+			debitosDoDia[dia] = opsMesAtual.stream().filter((op) -> op.getDia()== dia && op.getTipoOperacao()==1)
+					.mapToDouble((op) -> op.getValorOperacao()).sum();
+			creditosDoDia[dia] = opsMesAtual.stream().filter((op) -> op.getDia()== dia && op.getTipoOperacao()==0)
+					.mapToDouble((op) -> op.getValorOperacao()).sum();
+		}
+
+		double saldoDoDia[] = new double[31];
+		saldoDoDia[0] = saldoMesAnterior;
+		for(int i=1; i<=30; i++)
+			saldoDoDia[i] = saldoDoDia[i-1] - debitosDoDia[i] + creditosDoDia[i];
+//		System.out.println("aaa" + saldoDoDia[26]);
+		saldoDoDia[0] -= saldoMesAnterior;
+		
+		double totalDebitadoMes = Arrays.stream(debitosDoDia).sum();
+		double totalCreditadoMes = Arrays.stream(creditosDoDia).sum();
+		double saldoMedioMes = Arrays.stream(saldoDoDia).sum()/30;
+//		System.out.println(totalDebitadoMes + ", " + totalCreditadoMes  + ", " + saldoMedioMes);
 		return 0;
 	}
 }
