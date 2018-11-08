@@ -82,6 +82,7 @@ public class TelaEstatistica {
 		grid.add(lbSaldo, 0, 2);
 		
 		tfSaldo = new TextField();
+		tfSaldo.setText(String.valueOf(calculaSaldoMedioNoMes(operacoes, conta)));
 		tfSaldo.setEditable(false);
 		grid.add(tfSaldo, 1, 2);
 		
@@ -91,6 +92,7 @@ public class TelaEstatistica {
 		grid.add(lbDeposito, 0, 3);
 		
 		tfDeposito = new TextField();
+		tfDeposito.setText(String.valueOf(calculaDepositoNoMes()));
 		tfDeposito.setEditable(false);
 		grid.add(tfDeposito, 1, 3);
 		
@@ -100,6 +102,7 @@ public class TelaEstatistica {
 		grid.add(lbRetirado, 0, 4);
 		
 		tfRetirada = new TextField();
+		tfRetirada.setText(String.valueOf(calculaRetiradaNoMes()));
 		tfRetirada.setEditable(false);
 		grid.add(tfRetirada, 1, 4);
 		
@@ -163,5 +166,46 @@ public class TelaEstatistica {
 		double saldoMedioMes = Arrays.stream(saldoDoDia).sum()/30;
 //		System.out.println(totalDebitadoMes + ", " + totalCreditadoMes  + ", " + saldoMedioMes);
 		return 0;
+	}
+	
+
+	private double calculaDepositoNoMes() {
+		GregorianCalendar calen = new GregorianCalendar();
+		int mes = calen.get(Calendar.MONTH + 1);
+		int ano = calen.get(Calendar.YEAR);
+		
+		if(datePicker.getValue() != null) {
+			mes = datePicker.getValue().getMonthValue();
+			ano = datePicker.getValue().getYear();
+		}
+		
+		int[] c = new int[2];
+		c[0] = mes;
+		c[1] = ano;
+		double valorDepositado = operacoes.stream()
+				.filter((op) -> op.getNumeroConta() == conta.getNumero() && op.getAno() == c[1] && op.getMes() == c[0]
+						&& op.getTipoOperacao() == 0)
+				.mapToDouble((op) -> op.getValorOperacao()).sum();
+		return valorDepositado;
+	}
+	
+	private double calculaRetiradaNoMes() {
+		GregorianCalendar calen = new GregorianCalendar();
+		int mes = calen.get(Calendar.MONTH + 1);
+		int ano = calen.get(Calendar.YEAR);
+		
+		if(datePicker.getValue() != null) {
+			mes = datePicker.getValue().getMonthValue();
+			ano = datePicker.getValue().getYear();
+		}
+		
+		int[] c = new int[2];
+		c[0] = mes;
+		c[1] = ano;
+		double valorRetirado = operacoes.stream()
+				.filter((op) -> op.getNumeroConta() == conta.getNumero() && op.getAno() == c[1] && op.getMes() == c[0]
+						&& op.getTipoOperacao() == 1)
+				.mapToDouble((op) -> op.getValorOperacao()).sum();
+		return valorRetirado;
 	}
 }
