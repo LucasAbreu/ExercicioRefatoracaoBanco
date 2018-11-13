@@ -23,15 +23,15 @@ public class GerenciaOperacoes {
 		return (instance);
 	}
 
-	public double calculaSaldoMedioNoMes(List<Operacao> operacao, Conta conta, int mes, int ano) {
+	public double calculaSaldoMedioNoMes(Conta conta, int mes, int ano) {
 
-		List<Operacao> opsMesAnterior = operacao.stream()
+		List<Operacao> opsMesAnterior = operacoes.stream()
 				.filter((p) -> (p.getNumeroConta() == conta.getNumero()
 						&& ((p.getAno() < ano) || (p.getAno() == ano && p.getMes() < (mes)))))
 				.collect(Collectors.toList()); // busca todas operaçoes até o mes anterior ao selecionado
 
-		List<Operacao> opsMesAtual = operacao.stream().filter(
-				(p) -> (p.getNumeroConta() == conta.getNumero() && (p.getAno() == ano && p.getMes() == (mes))))
+		List<Operacao> opsMesAtual = operacoes.stream()
+				.filter((p) -> (p.getNumeroConta() == conta.getNumero() && (p.getAno() == ano && p.getMes() == (mes))))
 				.collect(Collectors.toList()); // busca todas operaçoes no mes selecionado
 
 		double saldoMesAnterior = 0; // Calcula o saldo da conta até o mes anterior ao selecionado
@@ -64,14 +64,24 @@ public class GerenciaOperacoes {
 		return new BigDecimal(saldoMedioMes).setScale(2, RoundingMode.HALF_DOWN).doubleValue();
 	}
 
-	private double calculaRetiradaNoMes(int mes, int ano) {
-		
-		
+	public double calculaRetiradaNoMes(Conta conta, int mes, int ano) {
+
 		double valorRetirado = operacoes.stream()
-				.filter((op) -> op.getNumeroConta() == GerenciaContas.getInstance().getContaEmUso().getNumero() && op.getAno() == ano && op.getMes() == mes
-						&& op.getTipoOperacao() == 1)
+				.filter((op) -> op.getNumeroConta() == conta.getNumero()
+						&& op.getAno() == ano && op.getMes() == mes && op.getTipoOperacao() == 1)
 				.mapToDouble((op) -> op.getValorOperacao()).sum();
 		System.out.println(valorRetirado);
 		return valorRetirado;
 	}
+
+	public double calculaDepositoNoMes(Conta conta, int mes, int ano) {
+
+		double valorDepositado = operacoes.stream()
+				.filter((op) -> op.getNumeroConta() == conta.getNumero()
+						&& op.getAno() == ano && op.getMes() == mes && op.getTipoOperacao() == 0)
+				.mapToDouble((op) -> op.getValorOperacao()).sum();
+
+		return valorDepositado;
+	}
+
 }

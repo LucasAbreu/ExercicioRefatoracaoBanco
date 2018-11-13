@@ -180,7 +180,7 @@ public class TelaOperacoes {
 		// Botao Estatistica
 		btnEstatistica.setOnAction(e -> {
 			try {
-				TelaEstatistica telaEstatistica = new TelaEstatistica(mainStage, cenaOperacoes, conta, operacoes);
+				TelaEstatistica telaEstatistica = new TelaEstatistica(mainStage, cenaOperacoes, conta);
 				Scene scene = telaEstatistica.getTelaEstatistica();
 				mainStage.setScene(scene);
 			} catch (NumberFormatException ex) {

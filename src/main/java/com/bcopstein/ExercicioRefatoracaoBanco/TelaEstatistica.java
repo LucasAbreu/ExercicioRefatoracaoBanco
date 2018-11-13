@@ -1,13 +1,8 @@
 package com.bcopstein.ExercicioRefatoracaoBanco;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.stream.Collectors;
-
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -23,7 +18,6 @@ public class TelaEstatistica {
 	private Scene cenaOperacoes;
 	private Scene cenaEstatistica;
 	private Conta conta;
-	private List<Operacao> operacoes;
 	private Label lbMes;
 	private Label lbConta;
 	private TextField tfConta;
@@ -34,12 +28,13 @@ public class TelaEstatistica {
 	private Label lbRetirado;
 	private TextField tfRetirada;
 	private DatePicker datePicker;
+	private GregorianCalendar gregorianCalendar;
 
-	public TelaEstatistica(Stage mainStage, Scene telaOperacoes, Conta conta, List<Operacao> operacoes) {
+	public TelaEstatistica(Stage mainStage, Scene telaOperacoes, Conta conta) {
 		this.mainStage = mainStage;
 		this.cenaOperacoes = telaOperacoes;
 		this.conta = conta;
-		this.operacoes = operacoes;
+		gregorianCalendar = new GregorianCalendar();
 	}
 
 	public Scene getTelaEstatistica() {
@@ -65,21 +60,13 @@ public class TelaEstatistica {
 		lbMes.setMinWidth(Label.USE_PREF_SIZE);
 		grid.add(lbMes, 2, 1);
 		
-		datePicker = new DatePicker();
-		datePicker.setOnAction(e ->{
-			tfSaldo.setText(String.valueOf(GerenciaOperacoes.calculaSaldoMedioNoMes(operacoes, conta,)));
-			tfDeposito.setText(String.valueOf(calculaDepositoNoMes()));
-			tfRetirada.setText(String.valueOf(calculaRetiradaNoMes()));
-		});
-		grid.add(datePicker, 3, 1);
-		
 		String saldoMedio = "Saldo Medio: ";
 		lbSaldo = new Label(saldoMedio);
 		lbSaldo.setMinWidth(Label.USE_PREF_SIZE);
 		grid.add(lbSaldo, 0, 2);
 		
 		tfSaldo = new TextField();
-		tfSaldo.setText(String.valueOf(GerenciaOperacoes.calculaSaldoMedioNoMes(operacoes, conta)));
+		tfSaldo.setText(String.valueOf(GerenciaOperacoes.getInstance().calculaSaldoMedioNoMes(conta, gregorianCalendar.get(Calendar.MONTH) + 1, gregorianCalendar.get(Calendar.YEAR))));
 		tfSaldo.setEditable(false);
 		grid.add(tfSaldo, 1, 2);
 		
@@ -89,7 +76,7 @@ public class TelaEstatistica {
 		grid.add(lbDeposito, 0, 3);
 		
 		tfDeposito = new TextField();
-		tfDeposito.setText(String.valueOf(calculaDepositoNoMes()));
+		tfDeposito.setText(String.valueOf(GerenciaOperacoes.getInstance().calculaDepositoNoMes(conta, gregorianCalendar.get(Calendar.MONTH) + 1, gregorianCalendar.get(Calendar.YEAR))));
 		tfDeposito.setEditable(false);
 		grid.add(tfDeposito, 1, 3);
 		
@@ -99,12 +86,20 @@ public class TelaEstatistica {
 		grid.add(lbRetirado, 0, 4);
 		
 		tfRetirada = new TextField();
-		tfRetirada.setText(String.valueOf(GerenciaOperacoes.calculaRetiradaNoMes()));
+		tfRetirada.setText(String.valueOf(GerenciaOperacoes.getInstance().calculaRetiradaNoMes(conta, gregorianCalendar.get(Calendar.MONTH) + 1, gregorianCalendar.get(Calendar.YEAR))));
 		tfRetirada.setEditable(false);
 		grid.add(tfRetirada, 1, 4);
 		
 		Button btnVoltar = new Button("Voltar");
 		grid.add(btnVoltar, 0, 5);
+		
+		datePicker = new DatePicker();
+		datePicker.setOnAction(e ->{
+			tfSaldo.setText(String.valueOf(GerenciaOperacoes.getInstance().calculaSaldoMedioNoMes(conta, datePicker.getValue().getMonthValue(), datePicker.getValue().getYear())));
+			tfDeposito.setText(String.valueOf(GerenciaOperacoes.getInstance().calculaDepositoNoMes(conta, datePicker.getValue().getMonthValue(), datePicker.getValue().getYear())));
+			tfRetirada.setText(String.valueOf(GerenciaOperacoes.getInstance().calculaRetiradaNoMes(conta, datePicker.getValue().getMonthValue(), datePicker.getValue().getYear())));
+		});
+		grid.add(datePicker, 3, 1);
 		
 		btnVoltar.setOnAction(e -> {
 			mainStage.setScene(cenaOperacoes);
