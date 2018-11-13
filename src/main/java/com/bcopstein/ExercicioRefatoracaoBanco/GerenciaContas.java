@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Map;
 
 public class GerenciaContas  {
-	static GerenciaContas instance;
+	static private GerenciaContas instance;
 	private int ContaEmUso;
 	private Map<Integer,Conta> listaContas;
 
