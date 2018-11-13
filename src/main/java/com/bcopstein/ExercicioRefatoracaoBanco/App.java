@@ -13,6 +13,7 @@ public class App extends Application {
 	
 	private TelaEntrada telaEntrada;
 	
+	
     @Override
     public void start(Stage primaryStage) {
     	persistencia = new Persistencia();
