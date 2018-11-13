@@ -67,7 +67,7 @@ public class TelaEstatistica {
 		
 		datePicker = new DatePicker();
 		datePicker.setOnAction(e ->{
-			tfSaldo.setText(String.valueOf(calculaSaldoMedioNoMes(operacoes, conta)));
+			tfSaldo.setText(String.valueOf(calculaSaldoMedioNoMes()));
 			tfDeposito.setText(String.valueOf(calculaDepositoNoMes()));
 			tfRetirada.setText(String.valueOf(calculaRetiradaNoMes()));
 		});
@@ -79,7 +79,7 @@ public class TelaEstatistica {
 		grid.add(lbSaldo, 0, 2);
 		
 		tfSaldo = new TextField();
-		tfSaldo.setText(String.valueOf(calculaSaldoMedioNoMes(operacoes, conta)));
+		tfSaldo.setText(String.valueOf(calculaSaldoMedioNoMes()));
 		tfSaldo.setEditable(false);
 		grid.add(tfSaldo, 1, 2);
 		
@@ -111,11 +111,11 @@ public class TelaEstatistica {
 		});
 		
 		cenaEstatistica = new Scene(grid);
-		this.calculaSaldoMedioNoMes(operacoes, conta);
+		this.calculaSaldoMedioNoMes();
 		return cenaEstatistica;
 	}
 	
-	public double calculaSaldoMedioNoMes(List<Operacao> operacao,Conta conta) {
+	public double calculaSaldoMedioNoMes() {
 		GregorianCalendar calen = new GregorianCalendar();
 		int mes = calen.get(Calendar.MONTH)+1;
 		int ano = calen.get(Calendar.YEAR);
@@ -125,53 +125,16 @@ public class TelaEstatistica {
 			ano = datePicker.getValue().getYear();
 		}
 		
-		int[] c = new int[2]; c[0] = mes;c[1] = ano;
+		int[] c = new int[2]; 
+		c[0] = mes;
+		c[1] = ano;
 		
-		List<Operacao> opsMesAnterior = operacao.stream().
-				filter( (p) -> (p.getNumeroConta() == conta.getNumero() && ((p.getAno() < c[1]) || ( p.getAno() == c[1] && p.getMes() < (c[0]) ))))
-				.collect(Collectors.toList()); // busca todas operaçoes até o mes anterior ao selecionado
+		long totalOp = operacoes.stream()
+				.filter((op) -> op.getNumeroConta() == conta.getNumero() && op.getAno() == c[1] && op.getMes() == c[0]).count();
 		
-		List<Operacao> opsMesAtual = operacao.stream().
-				filter( (p) -> (p.getNumeroConta() == conta.getNumero() && ( p.getAno() == c[1] && p.getMes() == (c[0]) )))
-				.collect(Collectors.toList()); // busca todas operaçoes no mes selecionado
-		
-		double saldoMesAnterior = 0; // Calcula o saldo da conta até o mes anterior ao selecionado
-		for( Operacao op : opsMesAnterior ) {
-			if( op.getTipoOperacao() == 0 )
-				saldoMesAnterior += op.getValorOperacao();
-			else
-				saldoMesAnterior -= op.getValorOperacao();
-		}
-		
-//		System.out.println(opsMesAnterior);
-//		System.out.println(opsMesAnterior.size());
-//		System.out.println(saldoMesAnterior);
-		
-		double debitosDoDia[] = new double[31];
-		double creditosDoDia[] = new double[31];
-		for(int i=1; i<=30; i++) { // Armazena todos debitos e creditos em cada ponto do array
-			int dia = i;
-			debitosDoDia[dia] = opsMesAtual.stream().filter((op) -> op.getDia()== dia && op.getTipoOperacao()==1)
-					.mapToDouble((op) -> op.getValorOperacao()).sum();
-			creditosDoDia[dia] = opsMesAtual.stream().filter((op) -> op.getDia()== dia && op.getTipoOperacao()==0)
-					.mapToDouble((op) -> op.getValorOperacao()).sum();
-		}
-
-		double saldoDoDia[] = new double[31];
-		saldoDoDia[0] = saldoMesAnterior;
-		for(int i=1; i<=30; i++)
-			saldoDoDia[i] = saldoDoDia[i-1] - debitosDoDia[i] + creditosDoDia[i];
-//		System.out.println("aaa" + saldoDoDia[26]);
-		saldoDoDia[0] -= saldoMesAnterior;
-		
-		//double totalDebitadoMes = Arrays.stream(debitosDoDia).sum();
-		//double totalCreditadoMes = Arrays.stream(creditosDoDia).sum();
-		double saldoMedioMes = Arrays.stream(saldoDoDia).sum()/30;
-//		System.out.println(totalDebitadoMes + ", " + totalCreditadoMes  + ", " + saldoMedioMes);
-		return new BigDecimal(saldoMedioMes).setScale(2, RoundingMode.HALF_DOWN).doubleValue();
+		return (calculaDepositoNoMes() + calculaRetiradaNoMes()) / totalOp;
 	}
 	
-
 	private double calculaDepositoNoMes() {
 		GregorianCalendar calen = new GregorianCalendar();
 		int mes = calen.get(Calendar.MONTH)+1;
@@ -182,12 +145,13 @@ public class TelaEstatistica {
 			ano = datePicker.getValue().getYear();
 		}
 		
-		int[] c = new int[2];c[0] = mes;c[1] = ano;
+		int[] c = new int[2];
+		c[0] = mes;
+		c[1] = ano;
+		
 		double valorDepositado = operacoes.stream()
-				.filter((op) -> op.getNumeroConta() == conta.getNumero() && op.getAno() == c[1] && op.getMes() == c[0]
-						&& op.getTipoOperacao() == 0)
-				.mapToDouble((op) -> op.getValorOperacao()).sum();
-		System.out.println(valorDepositado);
+				.filter((op) -> op.getNumeroConta() == conta.getNumero() && 
+				op.getAno() == c[1] && op.getMes() == c[0] && op.getTipoOperacao() == 0).mapToDouble((op) -> op.getValorOperacao()).sum();
 		return valorDepositado;
 	}
 	
@@ -201,12 +165,12 @@ public class TelaEstatistica {
 			ano = datePicker.getValue().getYear();
 		}
 		
-		int[] c = new int[2];c[0] = mes;c[1] = ano;
+		int[] c = new int[2];
+		c[0] = mes;
+		c[1] = ano;
 		double valorRetirado = operacoes.stream()
-				.filter((op) -> op.getNumeroConta() == conta.getNumero() && op.getAno() == c[1] && op.getMes() == c[0]
-						&& op.getTipoOperacao() == 1)
-				.mapToDouble((op) -> op.getValorOperacao()).sum();
-		System.out.println(valorRetirado);
+				.filter((op) -> op.getNumeroConta() == conta.getNumero() && 
+				op.getAno() == c[1] && op.getMes() == c[0] && op.getTipoOperacao() == 1).mapToDouble((op) -> op.getValorOperacao()).sum();
 		return valorRetirado;
 	}
 }
