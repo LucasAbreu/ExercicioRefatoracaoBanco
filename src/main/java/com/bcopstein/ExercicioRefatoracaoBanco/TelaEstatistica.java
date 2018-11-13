@@ -2,7 +2,6 @@ package com.bcopstein.ExercicioRefatoracaoBanco;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.List;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;

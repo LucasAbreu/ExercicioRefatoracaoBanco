@@ -2,9 +2,7 @@ package com.bcopstein.ExercicioRefatoracaoBanco;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.List;
 import java.util.stream.Collectors;
-
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -27,11 +25,8 @@ public class TelaOperacoes {
 	private Stage mainStage;
 	private Scene cenaEntrada;
 	private Scene cenaOperacoes;
-	private List<Operacao> operacoes;
 	private ObservableList<Operacao> operacoesConta;
-
 	private Conta conta;
-
 	private TextField tfValorOperacao;
 	private TextField tfSaldo;
 
@@ -41,13 +36,10 @@ public class TelaOperacoes {
 	private double totalSacadoHoje;
 	// ***MUDANÇAS***\\
 
-	public TelaOperacoes(Stage mainStage, Scene telaEntrada, Conta conta, List<Operacao> operacoes) { // Tirar esse
-																										// parâmetro //
-																										// conta
+	public TelaOperacoes(Stage mainStage, Scene telaEntrada, Conta conta) { 
 		this.mainStage = mainStage;
 		this.cenaEntrada = telaEntrada;
 		this.conta = conta;
-		this.operacoes = operacoes;
 		totalSacadoHoje = calculaValorSacadoHoje();
 	}
 
@@ -76,7 +68,7 @@ public class TelaOperacoes {
 		grid.add(tit, 0, 3);
 
 		// Seleciona apenas o extrato da conta atual
-		operacoesConta = FXCollections.observableArrayList(operacoes.stream()
+		operacoesConta = FXCollections.observableArrayList(GerenciaOperacoes.getInstance().getOperacoes().stream()
 				.filter(op -> op.getNumeroConta() == this.conta.getNumero()).collect(Collectors.toList()));
 
 		ListView<Operacao> extrato = new ListView<>(operacoesConta);
@@ -123,7 +115,7 @@ public class TelaOperacoes {
 						((int)date.get(GregorianCalendar.MONTH))+1, date.get(GregorianCalendar.YEAR),
 						date.get(GregorianCalendar.HOUR), date.get(GregorianCalendar.MINUTE),
 						date.get(GregorianCalendar.SECOND), conta.getNumero(), conta.getStatus(), valor, 0);
-				operacoes.add(op);
+				GerenciaOperacoes.getInstance().getOperacoes().add(op);
 				tfSaldo.setText("" + conta.getSaldo());
 				operacoesConta.add(op);
 			} catch (NumberFormatException ex) {
@@ -158,7 +150,7 @@ public class TelaOperacoes {
 						date.get(GregorianCalendar.HOUR), date.get(GregorianCalendar.MINUTE),
 						date.get(GregorianCalendar.SECOND), conta.getNumero(), conta.getStatus(), valor, 1);
 				// Esta adicionando em duas listas (resolver na camada de negocio)
-				operacoes.add(op);
+				GerenciaOperacoes.getInstance().getOperacoes().add(op);
 				tfSaldo.setText("" + conta.getSaldo());
 				operacoesConta.add(op);
 				tfSaldo.setText("" + conta.getSaldo());
@@ -205,7 +197,7 @@ public class TelaOperacoes {
 		int diaHoje = calen.get(Calendar.DAY_OF_MONTH);
 		int mesHoje = calen.get(Calendar.MONTH)+1;
 		int anoHoje = calen.get(Calendar.YEAR);
-		double valorSacadoHoje = operacoes.stream()
+		double valorSacadoHoje = GerenciaOperacoes.getInstance().getOperacoes().stream()
 				.filter((op) -> op.getNumeroConta() == conta.getNumero() && op.getAno() == anoHoje && op.getMes() == mesHoje
 						&& op.getDia() == diaHoje && op.getTipoOperacao() == 1.0)
 				.mapToDouble((op) -> op.getValorOperacao()).sum();

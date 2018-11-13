@@ -1,7 +1,6 @@
 package com.bcopstein.ExercicioRefatoracaoBanco;
-import java.util.List;
-import java.util.Map;
 
+import java.util.Map;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -24,14 +23,11 @@ public class TelaEntrada {
 	private Stage mainStage; 
 	private Scene cenaEntrada; 
 	private Map<Integer, Conta> contas; 
-	private List<Operacao> operacoes; 
-
 	private TextField tfContaCorrente;
 
-	public TelaEntrada(Stage anStage, Map<Integer, Conta> lstContas, List<Operacao> operacoes) {
+	public TelaEntrada(Stage anStage, Map<Integer, Conta> lstContas) {
 		mainStage = anStage;
 		contas = lstContas;
-		this.operacoes = operacoes;
 	}
 
 	public Scene getTelaEntrada() {
@@ -74,12 +70,16 @@ public class TelaEntrada {
 			try {
 				Integer nroConta = Integer.parseInt(tfContaCorrente.getText());
 				// Codigo da camada de negócio
+				
+				//GerenciaContas.getInstance().setContaEmUso(nroConta);
+				//Conta conta2 = GerenciaContas.getInstance().getContaEmUso();
+				
 				Conta conta = contas.get(nroConta);
 				if (conta == null) {
 					throw new NumberFormatException("Conta invalida");
 				}
 				// Transformar o parâmetro "conta" na conta atual na camada de negócio
-				TelaOperacoes toper = new TelaOperacoes(mainStage, cenaEntrada,conta,operacoes);
+				TelaOperacoes toper = new TelaOperacoes(mainStage, cenaEntrada,conta);
 				Scene scene = toper.getTelaOperacoes();
 				mainStage.setScene(scene);
 			} catch (NumberFormatException ex) {

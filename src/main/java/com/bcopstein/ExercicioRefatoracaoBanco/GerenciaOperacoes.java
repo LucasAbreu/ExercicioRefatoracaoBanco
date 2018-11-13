@@ -84,4 +84,11 @@ public class GerenciaOperacoes {
 		return valorDepositado;
 	}
 
+	public List<Operacao> getOperacoesDaConta(int nroConta){
+		return operacoes.stream().filter((op) -> op.getNumeroConta() == nroConta).collect(Collectors.toList());
+	}
+
+	public List<Operacao> getOperacoes(){
+		return operacoes;
+	}
 }
