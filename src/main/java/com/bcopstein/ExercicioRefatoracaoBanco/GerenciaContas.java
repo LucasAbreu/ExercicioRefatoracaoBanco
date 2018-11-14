@@ -26,4 +26,7 @@ public class GerenciaContas  {
 		return ContaEmUso;
 	}
 	
+	public Map<Integer,Conta> getListaContas(){
+		return this.listaContas;
+	}
 }
