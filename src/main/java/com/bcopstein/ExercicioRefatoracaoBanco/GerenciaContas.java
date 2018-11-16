@@ -1,13 +1,14 @@
 package com.bcopstein.ExercicioRefatoracaoBanco;
 
+import java.util.GregorianCalendar;
 import java.util.Map;
 
 public class GerenciaContas  {
 	private static GerenciaContas instance;
-	private Conta ContaEmUso;
+	private Conta contaEmUso;
 	private Map<Integer,Conta> listaContas;
 
-	private void Gerenciacontas() {
+	private GerenciaContas() {
 		listaContas = Persistencia.getInstance().loadContas();
 	}
 	
@@ -19,14 +20,21 @@ public class GerenciaContas  {
 	}
 	
 	public void setContaEmUso(Integer nroConta) {
-		ContaEmUso = listaContas.get(nroConta);
+		contaEmUso = listaContas.get(nroConta);
 	}
 	
 	public Conta getContaEmUso() {
-		return ContaEmUso;
+		return contaEmUso;
 	}
 	
 	public Map<Integer,Conta> getListaContas(){
 		return this.listaContas;
+	}
+	
+	public void deposito(double valor) {
+	}
+	
+	public void retirada() {
+		
 	}
 }

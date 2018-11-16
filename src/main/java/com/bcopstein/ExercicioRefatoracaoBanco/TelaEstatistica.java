@@ -29,10 +29,17 @@ public class TelaEstatistica {
 	private DatePicker datePicker;
 	private GregorianCalendar gregorianCalendar;
 
-	public TelaEstatistica(Stage mainStage, Scene telaOperacoes, Conta conta) {
+	/*public TelaEstatistica(Stage mainStage, Scene telaOperacoes, Conta conta) {
 		this.mainStage = mainStage;
 		this.cenaOperacoes = telaOperacoes;
 		this.conta = conta;
+		gregorianCalendar = new GregorianCalendar();
+	}*/
+	
+	public TelaEstatistica(Stage mainStage, Scene telaOperacoes) {
+		this.mainStage = mainStage;
+		this.cenaOperacoes = telaOperacoes;
+		this.conta = GerenciaContas.getInstance().getContaEmUso();
 		gregorianCalendar = new GregorianCalendar();
 	}
 

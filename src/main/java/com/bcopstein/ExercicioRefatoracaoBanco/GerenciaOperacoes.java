@@ -5,16 +5,17 @@ import java.math.RoundingMode;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class GerenciaOperacoes {
-	static GerenciaOperacoes instance;
+	private static GerenciaOperacoes instance;
 	private List<Operacao> operacoes;
+	private Conta contaEmUso;
 
 	private GerenciaOperacoes() {
 		operacoes = Persistencia.getInstance().loadOperacoes();
+		contaEmUso = GerenciaContas.getInstance().getContaEmUso();
 	}
 
 	static public GerenciaOperacoes getInstance() {
@@ -90,5 +91,27 @@ public class GerenciaOperacoes {
 
 	public List<Operacao> getOperacoes(){
 		return operacoes;
+	}
+	
+	public double calculaValorSacadoHoje() {
+		GregorianCalendar calen = new GregorianCalendar();
+		int diaHoje = calen.get(Calendar.DAY_OF_MONTH);
+		int mesHoje = calen.get(Calendar.MONTH)+1;
+		int anoHoje = calen.get(Calendar.YEAR);
+		double valorSacadoHoje = GerenciaOperacoes.getInstance().getOperacoes().stream()
+				.filter((op) -> op.getNumeroConta() == contaEmUso.getNumero() && op.getAno() == anoHoje && op.getMes() == mesHoje
+						&& op.getDia() == diaHoje && op.getTipoOperacao() == 1.0)
+				.mapToDouble((op) -> op.getValorOperacao()).sum();
+		return valorSacadoHoje;
+	}
+	
+	public Operacao adicionaOP(double valor, int tipo) {
+		GregorianCalendar date = new GregorianCalendar();
+		Operacao op = new Operacao(date.get(GregorianCalendar.DAY_OF_MONTH),
+				((int)date.get(GregorianCalendar.MONTH))+1, date.get(GregorianCalendar.YEAR),
+				date.get(GregorianCalendar.HOUR), date.get(GregorianCalendar.MINUTE),
+				date.get(GregorianCalendar.SECOND), contaEmUso.getNumero(), contaEmUso.getStatus(), valor, tipo);
+		operacoes.add(op);// ADICIONA A OP NA LISTA DE OP's
+		return op;
 	}
 }

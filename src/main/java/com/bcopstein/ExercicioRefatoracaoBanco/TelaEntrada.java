@@ -22,13 +22,17 @@ import javafx.stage.Stage;
 public class TelaEntrada {
 	private Stage mainStage; 
 	private Scene cenaEntrada; 
-	private Map<Integer, Conta> contas; 
+	//private Map<Integer, Conta> contas; 
 	private TextField tfContaCorrente;
 
-	public TelaEntrada(Stage anStage, Map<Integer, Conta> lstContas) {
+	/*public TelaEntrada(Stage anStage, Map<Integer, Conta> lstContas) {
 		mainStage = anStage;
 		contas = lstContas;
+	}*/
+	public TelaEntrada(Stage anStage) {
+		mainStage = anStage;
 	}
+
 
 	public Scene getTelaEntrada() {
 		GridPane grid = new GridPane();
@@ -70,16 +74,15 @@ public class TelaEntrada {
 			try {
 				Integer nroConta = Integer.parseInt(tfContaCorrente.getText());
 				// Codigo da camada de negócio
-				
-				//GerenciaContas.getInstance().setContaEmUso(nroConta);
-				//Conta conta2 = GerenciaContas.getInstance().getContaEmUso();
-				
-				Conta conta = contas.get(nroConta);
+				// VERIFICACAO SE A CONTA REQUISITADA EXISTE NO SISTEMA
+				Conta conta = GerenciaContas.getInstance().getListaContas().get(nroConta);
 				if (conta == null) {
 					throw new NumberFormatException("Conta invalida");
 				}
+				// CASO EXISTIR, TROCAR PARA TELA OPERACOES E CARREGAR O SISTEMA
 				// Transformar o parâmetro "conta" na conta atual na camada de negócio
-				TelaOperacoes toper = new TelaOperacoes(mainStage, cenaEntrada,conta);
+				GerenciaContas.getInstance().setContaEmUso(nroConta); // SET CONTA EM USO
+				TelaOperacoes toper = new TelaOperacoes(mainStage, cenaEntrada);
 				Scene scene = toper.getTelaOperacoes();
 				mainStage.setScene(scene);
 			} catch (NumberFormatException ex) {
@@ -87,11 +90,9 @@ public class TelaEntrada {
 				alert.setTitle("Conta inválida !!");
 				alert.setHeaderText(null);
 				alert.setContentText("Número de conta inválido!!");
-
 				alert.showAndWait();
 			}
 		});
-
 		cenaEntrada = new Scene(grid);
 		return cenaEntrada;
 	}

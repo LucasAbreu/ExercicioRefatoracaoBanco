@@ -36,12 +36,18 @@ public class TelaOperacoes {
 	private double totalSacadoHoje;
 	// ***MUDANÇAS***\\
 
-	public TelaOperacoes(Stage mainStage, Scene telaEntrada, Conta conta) { 
+	/*public TelaOperacoes(Stage mainStage, Scene telaEntrada, Conta conta) { 
 		this.mainStage = mainStage;
 		this.cenaEntrada = telaEntrada;
 		this.conta = conta;
 		totalSacadoHoje = calculaValorSacadoHoje();
+	}*/
+	public TelaOperacoes(Stage mainStage, Scene telaEntrada) { 
+		this.mainStage = mainStage;
+		this.cenaEntrada = telaEntrada;
+		this.conta = GerenciaContas.getInstance().getContaEmUso();
 	}
+
 
 	public Scene getTelaOperacoes() {
 		GridPane grid = new GridPane();
@@ -68,8 +74,7 @@ public class TelaOperacoes {
 		grid.add(tit, 0, 3);
 
 		// Seleciona apenas o extrato da conta atual
-		operacoesConta = FXCollections.observableArrayList(GerenciaOperacoes.getInstance().getOperacoes().stream()
-				.filter(op -> op.getNumeroConta() == this.conta.getNumero()).collect(Collectors.toList()));
+		operacoesConta = FXCollections.observableArrayList(GerenciaOperacoes.getInstance().getOperacoesDaConta(conta.getNumero()));
 
 		ListView<Operacao> extrato = new ListView<>(operacoesConta);
 		extrato.setPrefHeight(140);
@@ -110,20 +115,13 @@ public class TelaOperacoes {
 					throw new NumberFormatException("Valor invalido");
 				}
 				conta.deposito(valor);
-				GregorianCalendar date = new GregorianCalendar();
-				Operacao op = new Operacao(date.get(GregorianCalendar.DAY_OF_MONTH),
-						((int)date.get(GregorianCalendar.MONTH))+1, date.get(GregorianCalendar.YEAR),
-						date.get(GregorianCalendar.HOUR), date.get(GregorianCalendar.MINUTE),
-						date.get(GregorianCalendar.SECOND), conta.getNumero(), conta.getStatus(), valor, 0);
-				GerenciaOperacoes.getInstance().getOperacoes().add(op);
+				operacoesConta.add(GerenciaOperacoes.getInstance().adicionaOP(valor, 0));// ADICIONA NA OBSERVABLE
 				tfSaldo.setText("" + conta.getSaldo());
-				operacoesConta.add(op);
 			} catch (NumberFormatException ex) {
 				Alert alert = new Alert(AlertType.WARNING);
 				alert.setTitle("Valor inválido !!");
 				alert.setHeaderText(null);
 				alert.setContentText("Valor inválido para operacao de crédito!!");
-
 				alert.showAndWait();
 			}
 			// ***MUDANÇAS***\\
@@ -138,41 +136,31 @@ public class TelaOperacoes {
 					throw new NumberFormatException("Saldo insuficiente");
 				}
 				// ***MUDANÇAS***\\
+				totalSacadoHoje = GerenciaOperacoes.getInstance().calculaValorSacadoHoje();
 				if (valor + totalSacadoHoje > conta.getLimRetiradaDiaria()) {
 					throw new NumberFormatException("O valor :" + valor + " ultrapassa seu limite de saque do dia"
 							+ "\nO total sacado hoje foi dê :" + totalSacadoHoje + "\nSeu limite de saque é dê :"
 							+ conta.getLimRetiradaDiaria());
 				} // ***MUDANÇAS***\\
 				conta.retirada(valor);
-				GregorianCalendar date = new GregorianCalendar();
-				Operacao op = new Operacao(date.get(GregorianCalendar.DAY_OF_MONTH),
-						((int)date.get(GregorianCalendar.MONTH))+1, date.get(GregorianCalendar.YEAR),
-						date.get(GregorianCalendar.HOUR), date.get(GregorianCalendar.MINUTE),
-						date.get(GregorianCalendar.SECOND), conta.getNumero(), conta.getStatus(), valor, 1);
-				// Esta adicionando em duas listas (resolver na camada de negocio)
-				GerenciaOperacoes.getInstance().getOperacoes().add(op);
-				tfSaldo.setText("" + conta.getSaldo());
-				operacoesConta.add(op);
+				operacoesConta.add(GerenciaOperacoes.getInstance().adicionaOP(valor, 0));// ADICIONA NA OBSERVABLE
 				tfSaldo.setText("" + conta.getSaldo());
 			} catch (NumberFormatException ex) {
 				Alert alert = new Alert(AlertType.WARNING);
 				alert.setTitle("Valor inválido !!");
 				alert.setHeaderText(null);
 				alert.setContentText(ex.getMessage());// ***MUDANÇAS***\\
-
 				alert.showAndWait();
 			}
 			// ***MUDANÇAS***\\
 			cat.setText("Categoria: " + conta.getStrStatus());
-			totalSacadoHoje = calculaValorSacadoHoje();
-			System.out.println(totalSacadoHoje);
 			// ***MUDANÇAS***\\
 		});
 
 		// Botao Estatistica
 		btnEstatistica.setOnAction(e -> {
 			try {
-				TelaEstatistica telaEstatistica = new TelaEstatistica(mainStage, cenaOperacoes, conta);
+				TelaEstatistica telaEstatistica = new TelaEstatistica(mainStage, cenaOperacoes);
 				Scene scene = telaEstatistica.getTelaEstatistica();
 				mainStage.setScene(scene);
 			} catch (NumberFormatException ex) {
@@ -191,17 +179,4 @@ public class TelaOperacoes {
 		cenaOperacoes = new Scene(grid);
 		return cenaOperacoes;
 	}
-
-	private double calculaValorSacadoHoje() {
-		GregorianCalendar calen = new GregorianCalendar();
-		int diaHoje = calen.get(Calendar.DAY_OF_MONTH);
-		int mesHoje = calen.get(Calendar.MONTH)+1;
-		int anoHoje = calen.get(Calendar.YEAR);
-		double valorSacadoHoje = GerenciaOperacoes.getInstance().getOperacoes().stream()
-				.filter((op) -> op.getNumeroConta() == conta.getNumero() && op.getAno() == anoHoje && op.getMes() == mesHoje
-						&& op.getDia() == diaHoje && op.getTipoOperacao() == 1.0)
-				.mapToDouble((op) -> op.getValorOperacao()).sum();
-		return valorSacadoHoje;
-	}
-
 }
