@@ -26,7 +26,7 @@ public class TelaOperacoes {
 	private Scene cenaEntrada;
 	private Scene cenaOperacoes;
 	private ObservableList<Operacao> operacoesConta;
-	private Conta conta;
+//	private Conta conta;
 	private TextField tfValorOperacao;
 	private TextField tfSaldo;
 
@@ -45,7 +45,7 @@ public class TelaOperacoes {
 	public TelaOperacoes(Stage mainStage, Scene telaEntrada) { 
 		this.mainStage = mainStage;
 		this.cenaEntrada = telaEntrada;
-		this.conta = GerenciaContas.getInstance().getContaEmUso();
+//		this.conta = GerenciaContas.getInstance().getContaEmUso();
 	}
 
 
@@ -56,13 +56,16 @@ public class TelaOperacoes {
 		grid.setVgap(10);
 		grid.setPadding(new Insets(25, 25, 25, 25));
 
-		String dadosCorr = conta.getNumero() + " : " + conta.getCorrentista();
+		//String dadosCorr = conta.getNumero() + " : " + conta.getCorrentista();
+		String dadosCorr = GerenciaContas.getInstance().getNumeroContaEmUso() + " : " + GerenciaContas.getInstance().getCorrentista();
 		Text scenetitle = new Text(dadosCorr);
 		scenetitle.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
 		grid.add(scenetitle, 0, 0, 2, 1);
 
-		String categoria = "Categoria: " + conta.getStrStatus();
-		String limRetDiaria = "Limite retirada diaria: " + conta.getLimRetiradaDiaria();
+		//String categoria = "Categoria: " + conta.getStrStatus();
+		String categoria = "Categoria: " + GerenciaContas.getInstance().getStrStatus();
+		//String limRetDiaria = "Limite retirada diaria: " + conta.getLimRetiradaDiaria();
+		String limRetDiaria = "Limite retirada diaria: " + GerenciaContas.getInstance().getLimRetiradaDiaria();
 
 		cat = new Label(categoria);
 		grid.add(cat, 0, 1);
@@ -74,7 +77,8 @@ public class TelaOperacoes {
 		grid.add(tit, 0, 3);
 
 		// Seleciona apenas o extrato da conta atual
-		operacoesConta = FXCollections.observableArrayList(GerenciaOperacoes.getInstance().getOperacoesDaConta(conta.getNumero()));
+		//operacoesConta = FXCollections.observableArrayList(GerenciaOperacoes.getInstance().getOperacoesDaConta(conta.getNumero()));
+		operacoesConta = FXCollections.observableArrayList(GerenciaOperacoes.getInstance().getOperacoesDaConta(GerenciaContas.getInstance().getNumeroContaEmUso()));
 
 		ListView<Operacao> extrato = new ListView<>(operacoesConta);
 		extrato.setPrefHeight(140);
@@ -82,7 +86,7 @@ public class TelaOperacoes {
 
 		tfSaldo = new TextField();
 		tfSaldo.setDisable(true);
-		tfSaldo.setText("" + conta.getSaldo());
+		tfSaldo.setText("" + GerenciaContas.getInstance().getSaldo());
 		HBox valSaldo = new HBox(20);
 		valSaldo.setAlignment(Pos.BOTTOM_LEFT);
 		valSaldo.getChildren().add(new Label("Saldo"));
@@ -114,9 +118,9 @@ public class TelaOperacoes {
 				if (valor < 0.0) {
 					throw new NumberFormatException("Valor invalido");
 				}
-				conta.deposito(valor);
+				GerenciaContas.getInstance().deposito(valor);
 				operacoesConta.add(GerenciaOperacoes.getInstance().adicionaOP(valor, 0));// ADICIONA NA OBSERVABLE
-				tfSaldo.setText("" + conta.getSaldo());
+				tfSaldo.setText("" + GerenciaContas.getInstance().getSaldo());
 			} catch (NumberFormatException ex) {
 				Alert alert = new Alert(AlertType.WARNING);
 				alert.setTitle("Valor inválido !!");
@@ -125,26 +129,25 @@ public class TelaOperacoes {
 				alert.showAndWait();
 			}
 			// ***MUDANÇAS***\\
-			cat.setText("Categoria: " + conta.getStrStatus());
+			cat.setText("Categoria: " + GerenciaContas.getInstance().getStrStatus());
 			// ***MUDANÇAS***\\
 		});
 
 		btnDebito.setOnAction(e -> {
 			try {
 				double valor = Integer.parseInt(tfValorOperacao.getText());
-				if (valor < 0.0 || valor > conta.getSaldo()) {
-					throw new NumberFormatException("Saldo insuficiente");
-				}
+//				if (valor < 0.0 || valor > GerenciaContas.getInstance().getSaldo()) // <- teste sendo realizado no GerenciaContas 
+//					throw new NumberFormatException("Saldo insuficiente");
 				// ***MUDANÇAS***\\
 				totalSacadoHoje = GerenciaOperacoes.getInstance().calculaValorSacadoHoje();
-				if (valor + totalSacadoHoje > conta.getLimRetiradaDiaria()) {
+				if (valor + totalSacadoHoje > GerenciaContas.getInstance().getLimRetiradaDiaria()) { //VERIFICANDO onde fazer esse if fora da tela
 					throw new NumberFormatException("O valor :" + valor + " ultrapassa seu limite de saque do dia"
 							+ "\nO total sacado hoje foi dê :" + totalSacadoHoje + "\nSeu limite de saque é dê :"
-							+ conta.getLimRetiradaDiaria());
+							+ GerenciaContas.getInstance().getLimRetiradaDiaria());
 				} // ***MUDANÇAS***\\
-				conta.retirada(valor);
-				operacoesConta.add(GerenciaOperacoes.getInstance().adicionaOP(valor, 0));// ADICIONA NA OBSERVABLE
-				tfSaldo.setText("" + conta.getSaldo());
+				GerenciaContas.getInstance().retirada(valor);
+				operacoesConta.add(GerenciaOperacoes.getInstance().adicionaOP(valor, 1));// ADICIONA NA OBSERVABLE
+				tfSaldo.setText("" + GerenciaContas.getInstance().getSaldo());
 			} catch (NumberFormatException ex) {
 				Alert alert = new Alert(AlertType.WARNING);
 				alert.setTitle("Valor inválido !!");
@@ -153,7 +156,7 @@ public class TelaOperacoes {
 				alert.showAndWait();
 			}
 			// ***MUDANÇAS***\\
-			cat.setText("Categoria: " + conta.getStrStatus());
+			cat.setText("Categoria: " + GerenciaContas.getInstance().getStrStatus());
 			// ***MUDANÇAS***\\
 		});
 

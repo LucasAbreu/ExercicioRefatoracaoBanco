@@ -5,6 +5,7 @@ import javafx.stage.Stage;
 
 public class App extends Application {
 	private Persistencia persistencia;
+	GerenciaContas gerenciaContas;
 	//private Map<Integer,Conta> contas;
 	
 	private TelaEntrada telaEntrada;
@@ -12,6 +13,8 @@ public class App extends Application {
     @Override
     public void start(Stage primaryStage) {
     	persistencia = Persistencia.getInstance();
+    	gerenciaContas = GerenciaContas.getInstance();
+    	gerenciaContas.loadContas(persistencia.loadContas());
         //contas = persistencia.loadContas();    	
     		
     	primaryStage.setTitle("$$ Banco NOSSA GRANA $$");

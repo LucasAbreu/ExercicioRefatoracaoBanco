@@ -33,6 +33,10 @@ import java.util.Map;
 		return listaContas.get(this.ContaEmUso);
 	}
 	
+	public int getNumeroContaEmUso() {
+		return this.ContaEmUso;
+	}
+	
 	public Conta criaConta(int umNumero, String umNome,double umSaldo, int umStatus) throws Exception {
 		if(this.listaContas.get(umNumero) != null) {
 			throw new Exception("Numero de conta já existe");
@@ -52,7 +56,10 @@ import java.util.Map;
 	}
 	
 	public double retirada(double valor) {
-		this.listaContas.get(this.ContaEmUso).retirada(valor);
+		if(valor > this.getSaldo())
+			throw new NumberFormatException("Saldo insuficiente");
+		else
+			this.listaContas.get(this.ContaEmUso).retirada(valor);
 		return this.listaContas.get(this.ContaEmUso).getSaldo();
 	}
 	

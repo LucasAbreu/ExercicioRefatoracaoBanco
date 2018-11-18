@@ -72,9 +72,11 @@ public class TelaEntrada {
 		// Botao entrar
 		btnIn.setOnAction(e -> {
 			try {
+				
 				Integer nroConta = Integer.parseInt(tfContaCorrente.getText());
 				// Codigo da camada de negócio
 				// VERIFICACAO SE A CONTA REQUISITADA EXISTE NO SISTEMA
+				
 				Conta conta = GerenciaContas.getInstance().getListaContas().get(nroConta);
 				if (conta == null) {
 					throw new NumberFormatException("Conta invalida");
