@@ -6,8 +6,8 @@ import java.util.Map;
 	private int ContaEmUso;
 	private Map<Integer,Conta> listaContas;
 	
- 	private void Gerenciacontas() {
-		return;
+ 	private GerenciaContas() {
+ 		this.loadContas(Persistencia.getInstance().loadContas());
 	}
 	
 	static public GerenciaContas getInstance() {

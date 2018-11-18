@@ -13,8 +13,6 @@ public class App extends Application {
     @Override
     public void start(Stage primaryStage) {
     	persistencia = Persistencia.getInstance();
-    	gerenciaContas = GerenciaContas.getInstance();
-    	gerenciaContas.loadContas(persistencia.loadContas());
         //contas = persistencia.loadContas();    	
     		
     	primaryStage.setTitle("$$ Banco NOSSA GRANA $$");
