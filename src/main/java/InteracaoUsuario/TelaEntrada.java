@@ -21,29 +21,27 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 public class TelaEntrada {
-	private Stage mainStage; 
-	private Scene cenaEntrada; 
-	
+	private static TelaEntrada instance;
+	private Stage mainStage;
+	private Scene cenaEntrada;
 	private TextField tfContaCorrente;
 
-	private static TelaEntrada instance;
-	
 	private TelaEntrada() {
-		
+
 	}
+
 	public static TelaEntrada getInstance() {
-		if (instance == null) return new TelaEntrada();
+		if (instance == null)
+			return new TelaEntrada();
 		return instance;
 	}
 
-	public void setMainStage(Stage palco) {
-		mainStage = palco;
-		if(palco == null) System.out.println("PALCO CHEGOU NULL NA TELA ENTRADA");
-		if(mainStage == null) System.out.println("MAIN STAGE FICOU NULL NA TELA ENTRADA");
-		System.out.println("palco setado");
+	public void setMainStage(Stage stage) {
+		mainStage = stage;
 	}
+
 	public Scene getTelaEntrada() {
-		
+
 		GridPane grid = new GridPane();
 		grid.setAlignment(Pos.CENTER);
 		grid.setHgap(10);
@@ -80,7 +78,7 @@ public class TelaEntrada {
 		// Botao entrar
 		btnIn.setOnAction(e -> {
 			try {
-				//5 questoes factory, decorate, strategy, ideia de camada de negocios JML 
+				// 5 questoes factory, decorate, strategy, ideia de camada de negocios JML
 				Integer nroConta = Integer.parseInt(tfContaCorrente.getText());
 				if (LogicaOperacoesFachada.getInstance().verificaSeContaExiste(nroConta) == false) {
 					System.out.println("XABLAU 1");
@@ -90,7 +88,8 @@ public class TelaEntrada {
 				// Transformar o parâmetro "conta" na conta atual na camada de negócio
 				GerenciaContas.getInstance().setContaEmUso(nroConta); // SET CONTA EM USO
 				System.out.println("XABLAU 2");
-				if(mainStage == null) System.out.println("mainStage é null");
+				if (mainStage == null)
+					System.out.println("mainStage é null");
 				mainStage.setScene(TelaOperacoes.getInstance().getTelaOperacoes());
 				System.out.println("XABLAU FOI");
 			} catch (NumberFormatException ex) {

@@ -13,17 +13,15 @@ import Persistencia.Persistencia;
 public class GerenciaOperacoes {
 	private static GerenciaOperacoes instance;
 	private List<Operacao> operacoes;
-	private Conta contaEmUso;
 
 	private GerenciaOperacoes() {
 		operacoes = Persistencia.getInstance().loadOperacoes();
-		contaEmUso = GerenciaContas.getInstance().getContaEmUso();
 	}
 
 	static public GerenciaOperacoes getInstance() {
 		if (instance == null)
 			instance = new GerenciaOperacoes();
-		return (instance);
+		return instance;
 	}
 
 	public double calculaSaldoMedioNoMes(Conta conta, int mes, int ano) {
@@ -69,9 +67,9 @@ public class GerenciaOperacoes {
 
 	public double calculaRetiradaNoMes(Conta conta, int mes, int ano) {
 
-		double valorRetirado = operacoes.stream()
-				.filter((op) -> op.getNumeroConta() == conta.getNumero()
-						&& op.getAno() == ano && op.getMes() == mes && op.getTipoOperacao() == 1)
+		double valorRetirado = operacoes
+				.stream().filter((op) -> op.getNumeroConta() == conta.getNumero() && op.getAno() == ano
+						&& op.getMes() == mes && op.getTipoOperacao() == 1)
 				.mapToDouble((op) -> op.getValorOperacao()).sum();
 		System.out.println(valorRetirado);
 		return valorRetirado;
@@ -79,41 +77,42 @@ public class GerenciaOperacoes {
 
 	public double calculaDepositoNoMes(Conta conta, int mes, int ano) {
 
-		double valorDepositado = operacoes.stream()
-				.filter((op) -> op.getNumeroConta() == conta.getNumero()
-						&& op.getAno() == ano && op.getMes() == mes && op.getTipoOperacao() == 0)
+		double valorDepositado = operacoes
+				.stream().filter((op) -> op.getNumeroConta() == conta.getNumero() && op.getAno() == ano
+						&& op.getMes() == mes && op.getTipoOperacao() == 0)
 				.mapToDouble((op) -> op.getValorOperacao()).sum();
 
 		return valorDepositado;
 	}
 
-	public List<Operacao> getOperacoesDaConta(int nroConta){
+	public List<Operacao> getOperacoesDaConta(int nroConta) {
 		return operacoes.stream().filter((op) -> op.getNumeroConta() == nroConta).collect(Collectors.toList());
 	}
 
-	public List<Operacao> getOperacoes(){
+	public List<Operacao> getOperacoes() {
 		return operacoes;
 	}
-	
+
 	public double calculaValorSacadoHoje() {
 		GregorianCalendar calen = new GregorianCalendar();
 		int diaHoje = calen.get(Calendar.DAY_OF_MONTH);
-		int mesHoje = calen.get(Calendar.MONTH)+1;
+		int mesHoje = calen.get(Calendar.MONTH) + 1;
 		int anoHoje = calen.get(Calendar.YEAR);
 		double valorSacadoHoje = GerenciaOperacoes.getInstance().getOperacoes().stream()
-				.filter((op) -> op.getNumeroConta() == contaEmUso.getNumero() && op.getAno() == anoHoje && op.getMes() == mesHoje
-						&& op.getDia() == diaHoje && op.getTipoOperacao() == 1.0)
+				.filter((op) -> op.getNumeroConta() == GerenciaContas.getInstance().getContaEmUso().getNumero() && op.getAno() == anoHoje
+						&& op.getMes() == mesHoje && op.getDia() == diaHoje && op.getTipoOperacao() == 1.0)
 				.mapToDouble((op) -> op.getValorOperacao()).sum();
 		return valorSacadoHoje;
 	}
-	
+
 	public Operacao adicionaOP(double valor, int tipo) {
 		GregorianCalendar date = new GregorianCalendar();
 		Operacao op = new Operacao(date.get(GregorianCalendar.DAY_OF_MONTH),
-				((int)date.get(GregorianCalendar.MONTH))+1, date.get(GregorianCalendar.YEAR),
+				((int) date.get(GregorianCalendar.MONTH)) + 1, date.get(GregorianCalendar.YEAR),
 				date.get(GregorianCalendar.HOUR), date.get(GregorianCalendar.MINUTE),
-				date.get(GregorianCalendar.SECOND), contaEmUso.getNumero(), contaEmUso.getStatus(), valor, tipo);
+				date.get(GregorianCalendar.SECOND), GerenciaContas.getInstance().getContaEmUso().getNumero(), GerenciaContas.getInstance().getContaEmUso().getStatus(), valor, tipo);
 		operacoes.add(op);// ADICIONA A OP NA LISTA DE OP's
 		return op;
 	}
+
 }

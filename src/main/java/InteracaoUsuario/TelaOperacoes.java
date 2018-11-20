@@ -25,27 +25,29 @@ import javafx.stage.Stage;
 public class TelaOperacoes {
 	private Stage mainStage;
 	private Scene cenaOperacoes;
-	
+
 	private ObservableList<Operacao> operacoesConta;
 	private TextField tfValorOperacao;
 	private TextField tfSaldo;
 	private Label cat;
 	private double totalSacadoHoje;
-	
+
 	private static TelaOperacoes instance;
-	
+
 	private TelaOperacoes() {
-		System.out.println("CONSTRUTOR PRIVADO TELA OP");
-	}
-	public static TelaOperacoes getInstance() {
-		if(instance == null) { 
-			System.out.println("NOVA INSTANCIA CONSTRUTOR PUBLICO TELA OP");
-			return new TelaOperacoes(); 
-		}
-		System.out.println("VELHA INSTANCIA CONSTRUTOR PUBLICO TELA OP");
-		return instance;
+		
 	}
 
+	public static TelaOperacoes getInstance() {
+		if (instance == null) {
+			return new TelaOperacoes();
+		}
+		return instance;
+	}
+	
+	public void setMainStage(Stage stage) {
+		mainStage = stage;
+	}
 
 	public Scene getTelaOperacoes() {
 		GridPane grid = new GridPane();
@@ -54,7 +56,8 @@ public class TelaOperacoes {
 		grid.setVgap(10);
 		grid.setPadding(new Insets(25, 25, 25, 25));
 
-		String dadosCorr = GerenciaContas.getInstance().getNumeroContaEmUso() + " : " + GerenciaContas.getInstance().getCorrentista();
+		String dadosCorr = GerenciaContas.getInstance().getNumeroContaEmUso() + " : "
+				+ GerenciaContas.getInstance().getCorrentista();
 		Text scenetitle = new Text(dadosCorr);
 		scenetitle.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
 		grid.add(scenetitle, 0, 0, 2, 1);
@@ -72,7 +75,8 @@ public class TelaOperacoes {
 		grid.add(tit, 0, 3);
 
 		// Seleciona apenas o extrato da conta atual
-		operacoesConta = FXCollections.observableArrayList(GerenciaOperacoes.getInstance().getOperacoesDaConta(GerenciaContas.getInstance().getNumeroContaEmUso()));
+		operacoesConta = FXCollections.observableArrayList(GerenciaOperacoes.getInstance()
+				.getOperacoesDaConta(GerenciaContas.getInstance().getNumeroContaEmUso()));
 
 		ListView<Operacao> extrato = new ListView<>(operacoesConta);
 		extrato.setPrefHeight(140);
@@ -112,9 +116,11 @@ public class TelaOperacoes {
 				if (valor < 0.0) {
 					throw new NumberFormatException("Valor invalido");
 				}
-				LogicaOperacoesFachada.getInstance().creditaDeposita( valor,(GerenciaContas.getInstance().getContaEmUso()) );
+				LogicaOperacoesFachada.getInstance().creditaDeposita(valor,
+						(GerenciaContas.getInstance().getContaEmUso()));
 				operacoesConta.add(GerenciaOperacoes.getInstance().adicionaOP(valor, 0));// ADICIONA NA OBSERVABLE
-				tfSaldo.setText(""+LogicaOperacoesFachada.getInstance().getSaldoConta((GerenciaContas.getInstance().getContaEmUso())));
+				tfSaldo.setText("" + LogicaOperacoesFachada.getInstance()
+						.getSaldoConta((GerenciaContas.getInstance().getContaEmUso())));
 			} catch (NumberFormatException ex) {
 				Alert alert = new Alert(AlertType.WARNING);
 				alert.setTitle("Valor inválido !!");
@@ -129,7 +135,9 @@ public class TelaOperacoes {
 			try {
 				double valor = Integer.parseInt(tfValorOperacao.getText());
 				totalSacadoHoje = GerenciaOperacoes.getInstance().calculaValorSacadoHoje();
-				if (valor + totalSacadoHoje > GerenciaContas.getInstance().getLimRetiradaDiaria()) { //VERIFICANDO onde fazer esse if fora da tela
+				if (valor + totalSacadoHoje > GerenciaContas.getInstance().getLimRetiradaDiaria()) { // VERIFICANDO onde
+																										// fazer esse if
+																										// fora da tela
 					throw new NumberFormatException("O valor :" + valor + " ultrapassa seu limite de saque do dia"
 							+ "\nO total sacado hoje foi dê :" + totalSacadoHoje + "\nSeu limite de saque é dê :"
 							+ GerenciaContas.getInstance().getLimRetiradaDiaria());
@@ -170,4 +178,5 @@ public class TelaOperacoes {
 		cenaOperacoes = new Scene(grid);
 		return cenaOperacoes;
 	}
+
 }
