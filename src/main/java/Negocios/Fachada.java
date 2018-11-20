@@ -23,13 +23,21 @@ public class Fachada {
 		return false;
 	}
 
-	public void creditaDeposita(double valor, Conta conta) {
-		// CREDITA/DEPOSITA O VALOR NA CONTA DO PARAMETRO
-		(GerenciaContas.getInstance().getListaContas().get(conta.getNumero())).deposito(valor);
+	public boolean credito(double valor, Conta conta) {
+		if(valor > 0 && conta != null) {
+			GerenciaContas.getInstance().getListaContas().get(conta.getNumero()).deposito(valor);
+			return true;
+		}
+		return false;
 	}
 
-	public void debitaSaca(double valor, Conta conta) {
-
+	public boolean debito(double valor, Conta conta) {
+		double totalSacadoHoje = GerenciaOperacoes.getInstance().calculaValorSacadoHoje();
+		if (valor + totalSacadoHoje <= GerenciaContas.getInstance().getLimRetiradaDiaria() && conta != null) {
+			GerenciaContas.getInstance().getListaContas().get(conta.getNumero()).retirada(valor);
+			return true;
+		}
+		return false;
 	}
 
 	public double getSaldoConta(Conta conta) {

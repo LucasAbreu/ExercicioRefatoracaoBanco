@@ -113,38 +113,37 @@ public class TelaOperacoes {
 		btnCredito.setOnAction(e -> {
 			try {
 				double valor = Integer.parseInt(tfValorOperacao.getText());
-				if (valor < 0.0) {
+				if (!Fachada.getInstance().credito(valor, GerenciaContas.getInstance().getContaEmUso())) {
 					throw new NumberFormatException("Valor invalido");
 				}
-				Fachada.getInstance().creditaDeposita(valor,
-						(GerenciaContas.getInstance().getContaEmUso()));
+
 				operacoesConta.add(GerenciaOperacoes.getInstance().adicionaOP(valor, 0));// ADICIONA NA OBSERVABLE
-				tfSaldo.setText("" + Fachada.getInstance()
-						.getSaldoConta((GerenciaContas.getInstance().getContaEmUso())));
+				tfSaldo.setText(
+						"" + Fachada.getInstance().getSaldoConta((GerenciaContas.getInstance().getContaEmUso())));
+				cat.setText("Categoria: " + GerenciaContas.getInstance().getStrStatus());
+
 			} catch (NumberFormatException ex) {
 				Alert alert = new Alert(AlertType.WARNING);
 				alert.setTitle("Valor inválido !!");
 				alert.setHeaderText(null);
-				alert.setContentText("Valor inválido para operacao de crédito!!");
+				alert.setContentText(ex.getMessage());
 				alert.showAndWait();
 			}
-			cat.setText("Categoria: " + GerenciaContas.getInstance().getStrStatus());
 		});
 
 		btnDebito.setOnAction(e -> {
 			try {
 				double valor = Integer.parseInt(tfValorOperacao.getText());
-				totalSacadoHoje = GerenciaOperacoes.getInstance().calculaValorSacadoHoje();
-				if (valor + totalSacadoHoje > GerenciaContas.getInstance().getLimRetiradaDiaria()) { // VERIFICANDO onde
-																										// fazer esse if
-																										// fora da tela
+				if (!Fachada.getInstance().debito(valor, GerenciaContas.getInstance().getContaEmUso())) {
 					throw new NumberFormatException("O valor :" + valor + " ultrapassa seu limite de saque do dia"
 							+ "\nO total sacado hoje foi dê :" + totalSacadoHoje + "\nSeu limite de saque é dê :"
 							+ GerenciaContas.getInstance().getLimRetiradaDiaria());
 				}
-				GerenciaContas.getInstance().retirada(valor);
+
 				operacoesConta.add(GerenciaOperacoes.getInstance().adicionaOP(valor, 1));// ADICIONA NA OBSERVABLE
 				tfSaldo.setText("" + GerenciaContas.getInstance().getSaldo());
+				cat.setText("Categoria: " + GerenciaContas.getInstance().getStrStatus());
+
 			} catch (NumberFormatException ex) {
 				Alert alert = new Alert(AlertType.WARNING);
 				alert.setTitle("Valor inválido !!");
@@ -152,9 +151,6 @@ public class TelaOperacoes {
 				alert.setContentText(ex.getMessage());// ***MUDANÇAS***\\
 				alert.showAndWait();
 			}
-			// ***MUDANÇAS***\\
-			cat.setText("Categoria: " + GerenciaContas.getInstance().getStrStatus());
-			// ***MUDANÇAS***\\
 		});
 
 		// Botao Estatistica
