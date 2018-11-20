@@ -1,4 +1,4 @@
-package com.bcopstein.ExercicioRefatoracaoBanco;
+package Negocios;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -7,6 +7,8 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import Persistencia.Persistencia;
 
 public class GerenciaOperacoes {
 	private static GerenciaOperacoes instance;

@@ -1,6 +1,8 @@
-package com.bcopstein.ExercicioRefatoracaoBanco;
+package Negocios;
  import java.util.ArrayList;
 import java.util.Map;
+
+import Persistencia.Persistencia;
  public class GerenciaContas  {
 	static GerenciaContas instance;
 	private int ContaEmUso;

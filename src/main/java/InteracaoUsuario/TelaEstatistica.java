@@ -1,7 +1,11 @@
-package com.bcopstein.ExercicioRefatoracaoBanco;
+package InteracaoUsuario;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+
+import Negocios.Conta;
+import Negocios.GerenciaContas;
+import Negocios.GerenciaOperacoes;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;

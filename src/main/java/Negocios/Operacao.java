@@ -1,4 +1,4 @@
-package com.bcopstein.ExercicioRefatoracaoBanco;
+package Negocios;
 public class Operacao {
 	public final int CREDITO = 0;
 	public final int DEBITO = 1;

@@ -1,4 +1,4 @@
-package com.bcopstein.ExercicioRefatoracaoBanco;
+package Persistencia;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.charset.Charset;
@@ -12,6 +12,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Scanner;
+
+import Negocios.Conta;
+import Negocios.Operacao;
 
 public class Persistencia {
     private final String NomeBDContas = "BDContasBNG.txt";

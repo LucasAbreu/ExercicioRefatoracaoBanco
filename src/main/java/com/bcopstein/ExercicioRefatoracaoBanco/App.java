@@ -1,4 +1,8 @@
 package com.bcopstein.ExercicioRefatoracaoBanco;
+import InteracaoUsuario.TelaEntrada;
+import Negocios.GerenciaContas;
+import Negocios.GerenciaOperacoes;
+import Persistencia.Persistencia;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
