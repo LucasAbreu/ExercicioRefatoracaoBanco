@@ -35,7 +35,7 @@ public class TelaOperacoes {
 	private static TelaOperacoes instance;
 
 	private TelaOperacoes() {
-		
+
 	}
 
 	public static TelaOperacoes getInstance() {
@@ -44,7 +44,7 @@ public class TelaOperacoes {
 		}
 		return instance;
 	}
-	
+
 	public void setMainStage(Stage stage) {
 		mainStage = stage;
 	}
@@ -160,8 +160,10 @@ public class TelaOperacoes {
 		// Botao Estatistica
 		btnEstatistica.setOnAction(e -> {
 			try {
-				Scene scene = TelaEstatistica.getInstance().getTelaEstatistica();
-				mainStage.setScene(scene);
+				TelaEstatistica telaEstatistica = TelaEstatistica.getInstance();
+				telaEstatistica.setMainStage(mainStage);
+				Scene scene = telaEstatistica.getTelaEstatistica();
+				//mainStage.setScene(scene);
 			} catch (NumberFormatException ex) {
 				Alert alert = new Alert(AlertType.WARNING);
 				alert.setTitle("Conta inválida !!");
