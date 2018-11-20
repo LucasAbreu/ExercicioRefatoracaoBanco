@@ -159,22 +159,15 @@ public class TelaOperacoes {
 
 		// Botao Estatistica
 		btnEstatistica.setOnAction(e -> {
-			try {
-				TelaEstatistica telaEstatistica = TelaEstatistica.getInstance();
-				telaEstatistica.setMainStage(mainStage);
-				Scene scene = telaEstatistica.getTelaEstatistica();
-				//mainStage.setScene(scene);
-			} catch (NumberFormatException ex) {
-				Alert alert = new Alert(AlertType.WARNING);
-				alert.setTitle("Conta inválida !!");
-				alert.setHeaderText(null);
-				alert.setContentText("Número de conta inválido!!");
-				alert.showAndWait();
-			}
+			TelaEstatistica telaEstatistica = TelaEstatistica.getInstance();
+			telaEstatistica.setMainStage(mainStage);
+			Scene scene = telaEstatistica.getTelaEstatistica();
+			mainStage.setScene(scene);
 		});
 
 		btnVoltar.setOnAction(e -> {
-			//mainStage.setScene(TelaEntrada.getInstance().getTelaEntrada()); // TELA OP VOLTA PRA TELA ENTRADA
+			// mainStage.setScene(TelaEntrada.getInstance().getTelaEntrada()); // TELA OP
+			// VOLTA PRA TELA ENTRADA
 			TelaEntrada telaEntrada = TelaEntrada.getInstance();
 			telaEntrada.setMainStage(mainStage);
 			Scene scene = telaEntrada.getTelaEntrada();
