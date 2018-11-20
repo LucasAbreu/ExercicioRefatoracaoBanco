@@ -174,7 +174,11 @@ public class TelaOperacoes {
 		});
 
 		btnVoltar.setOnAction(e -> {
-			mainStage.setScene(TelaEntrada.getInstance().getTelaEntrada()); // TELA OP VOLTA PRA TELA ENTRADA
+			//mainStage.setScene(TelaEntrada.getInstance().getTelaEntrada()); // TELA OP VOLTA PRA TELA ENTRADA
+			TelaEntrada telaEntrada = TelaEntrada.getInstance();
+			telaEntrada.setMainStage(mainStage);
+			Scene scene = telaEntrada.getTelaEntrada();
+			mainStage.setScene(scene);
 		});
 
 		cenaOperacoes = new Scene(grid);
