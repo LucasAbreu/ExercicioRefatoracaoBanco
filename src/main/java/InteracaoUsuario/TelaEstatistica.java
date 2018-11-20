@@ -4,8 +4,7 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 import Negocios.Conta;
-import Negocios.GerenciaContas;
-import Negocios.GerenciaOperacoes;
+import Negocios.LogicaOperacoesFachada;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -56,14 +55,19 @@ public class TelaEstatistica {
 		grid.setHgap(10);
 		grid.setVgap(10);
 		grid.setPadding(new Insets(25, 25, 25, 25));
-		// grid.setGridLinesVisible(true);
+		
+		//AUXILIAR LOCAL DIMINUIR TAMANHO LINHAS//////////////////////////////
+		Conta contaEmUso = LogicaOperacoesFachada.getInstance().getContaEmUso();
+		int mesHoje = gregorianCalendar.get(Calendar.MONTH) + 1;
+		int anoHoje = gregorianCalendar.get(Calendar.YEAR);
+		//AUXILIAR LOCAL DIMINUIR TAMANHO LINHAS//////////////////////////////
 		
 		String c = "Conta: ";
 		lbConta = new Label(c);
 		grid.add(lbConta, 0, 1);
 		
 		tfConta = new TextField();
-		tfConta.setText(String.valueOf(GerenciaContas.getInstance().getContaEmUso().getNumero()));
+		tfConta.setText(""+LogicaOperacoesFachada.getInstance().getContaEmUso().getNumero());
 		tfConta.setEditable(false);
 		grid.add(tfConta, 1, 1);
 		
@@ -78,8 +82,7 @@ public class TelaEstatistica {
 		grid.add(lbSaldo, 0, 2);
 
 		tfSaldo = new TextField();
-		tfSaldo.setText(String.valueOf(GerenciaOperacoes.getInstance().calculaSaldoMedioNoMes(GerenciaContas.getInstance().getContaEmUso(),
-				gregorianCalendar.get(Calendar.MONTH) + 1, gregorianCalendar.get(Calendar.YEAR))));
+		tfSaldo.setText(""+LogicaOperacoesFachada.getInstance().getSaldoMedioConta(contaEmUso,mesHoje,anoHoje));
 		tfSaldo.setEditable(false);
 		grid.add(tfSaldo, 1, 2);
 
@@ -89,8 +92,7 @@ public class TelaEstatistica {
 		grid.add(lbDeposito, 0, 3);
 
 		tfDeposito = new TextField();
-		tfDeposito.setText(String.valueOf(GerenciaOperacoes.getInstance().calculaDepositoNoMes(GerenciaContas.getInstance().getContaEmUso(),
-				gregorianCalendar.get(Calendar.MONTH) + 1, gregorianCalendar.get(Calendar.YEAR))));
+		tfDeposito.setText(""+LogicaOperacoesFachada.getInstance().getTotalDepositosConta(contaEmUso,mesHoje,anoHoje));
 		tfDeposito.setEditable(false);
 		grid.add(tfDeposito, 1, 3);
 
@@ -100,8 +102,7 @@ public class TelaEstatistica {
 		grid.add(lbRetirado, 0, 4);
 
 		tfRetirada = new TextField();
-		tfRetirada.setText(String.valueOf(GerenciaOperacoes.getInstance().calculaRetiradaNoMes(GerenciaContas.getInstance().getContaEmUso(),
-				gregorianCalendar.get(Calendar.MONTH) + 1, gregorianCalendar.get(Calendar.YEAR))));
+		tfRetirada.setText(""+LogicaOperacoesFachada.getInstance().getTotalRetiradasConta(contaEmUso,mesHoje,anoHoje));
 		tfRetirada.setEditable(false);
 		grid.add(tfRetirada, 1, 4);
 
@@ -110,17 +111,19 @@ public class TelaEstatistica {
 
 		datePicker = new DatePicker();
 		datePicker.setOnAction(e -> {
-			tfSaldo.setText(String.valueOf(GerenciaOperacoes.getInstance().calculaSaldoMedioNoMes(GerenciaContas.getInstance().getContaEmUso(),
-					datePicker.getValue().getMonthValue(), datePicker.getValue().getYear())));
-			tfDeposito.setText(String.valueOf(GerenciaOperacoes.getInstance().calculaDepositoNoMes(GerenciaContas.getInstance().getContaEmUso(),
-					datePicker.getValue().getMonthValue(), datePicker.getValue().getYear())));
-			tfRetirada.setText(String.valueOf(GerenciaOperacoes.getInstance().calculaRetiradaNoMes(GerenciaContas.getInstance().getContaEmUso(),
-					datePicker.getValue().getMonthValue(), datePicker.getValue().getYear())));
+			int mesDatePicker = datePicker.getValue().getMonthValue();
+			int anoDatePicker = datePicker.getValue().getYear();
+			tfSaldo.setText(""+LogicaOperacoesFachada.getInstance().getSaldoMedioConta(contaEmUso,mesDatePicker,anoDatePicker));
+			tfDeposito.setText(""+LogicaOperacoesFachada.getInstance().getTotalRetiradasConta(contaEmUso,mesDatePicker,anoDatePicker));
+			tfRetirada.setText(""+LogicaOperacoesFachada.getInstance().getTotalDepositosConta(contaEmUso,mesDatePicker,anoDatePicker));
 		});
 		grid.add(datePicker, 3, 1);
 
 		btnVoltar.setOnAction(e -> {
-			mainStage.setScene(TelaOperacoes.getInstance().getTelaOperacoes()); // TELA ESTATIST VOLTA PRA TELA OP
+			TelaOperacoes telaOperacoes = TelaOperacoes.getInstance();
+			telaOperacoes.setMainStage(mainStage);
+			Scene scene = telaOperacoes.getTelaOperacoes();
+			mainStage.setScene(scene);
 		});
 	
 		cenaEstatistica = new Scene(grid);

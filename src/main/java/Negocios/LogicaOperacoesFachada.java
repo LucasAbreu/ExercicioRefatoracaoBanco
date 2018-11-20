@@ -34,16 +34,16 @@ public class LogicaOperacoesFachada {
 		// RETORNA O SALDO DA CONTA DO PARAMETRO
 	}
 
-	public double getSaldoMedioConta(Conta conta) {
-		return 0.0;
+	public double getSaldoMedioConta(Conta conta,int mes, int ano) {
+		return GerenciaOperacoes.getInstance().calculaSaldoMedioNoMes(conta, mes, ano);
 	}
 
-	public double getTotalDepositosConta(Conta conta) {
-		return 0.0;
+	public double getTotalDepositosConta(Conta conta, int mes, int ano) {
+		return GerenciaOperacoes.getInstance().calculaDepositoNoMes(conta, mes, ano);
 	}
 
-	public double getTotalRetiradasConta(Conta conta) {
-		return 0.0;
+	public double getTotalRetiradasConta(Conta conta, int mes, int ano) {
+		return GerenciaOperacoes.getInstance().calculaRetiradaNoMes(conta, mes, ano);
 	}
 
 	public Conta getContaEmUso() {
