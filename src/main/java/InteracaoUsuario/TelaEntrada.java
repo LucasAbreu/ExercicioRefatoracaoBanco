@@ -1,9 +1,7 @@
 package InteracaoUsuario;
 
-import java.util.Map;
-
-import Negocios.Conta;
 import Negocios.GerenciaContas;
+import Negocios.LogicaOperacoesFachada;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -25,17 +23,11 @@ import javafx.stage.Stage;
 public class TelaEntrada {
 	private Stage mainStage; 
 	private Scene cenaEntrada; 
-	//private Map<Integer, Conta> contas; 
 	private TextField tfContaCorrente;
 
-	/*public TelaEntrada(Stage anStage, Map<Integer, Conta> lstContas) {
-		mainStage = anStage;
-		contas = lstContas;
-	}*/
 	public TelaEntrada(Stage anStage) {
 		mainStage = anStage;
 	}
-
 
 	public Scene getTelaEntrada() {
 		GridPane grid = new GridPane();
@@ -43,7 +35,6 @@ public class TelaEntrada {
 		grid.setHgap(10);
 		grid.setVgap(10);
 		grid.setPadding(new Insets(25, 25, 25, 25));
-		// grid.setGridLinesVisible(true);
 
 		Text scenetitle = new Text("Bem vindo ao Banco Nossa Grana");
 		scenetitle.setId("welcome-text");
@@ -75,13 +66,9 @@ public class TelaEntrada {
 		// Botao entrar
 		btnIn.setOnAction(e -> {
 			try {
-				
+				//5 questoes factory, decorate, strategy, ideia de camada de negocios JML 
 				Integer nroConta = Integer.parseInt(tfContaCorrente.getText());
-				// Codigo da camada de negócio
-				// VERIFICACAO SE A CONTA REQUISITADA EXISTE NO SISTEMA
-				
-				Conta conta = GerenciaContas.getInstance().getListaContas().get(nroConta);
-				if (conta == null) {
+				if (LogicaOperacoesFachada.getInstance().verificaSeContaExiste(nroConta) == false) {
 					throw new NumberFormatException("Conta invalida");
 				}
 				// CASO EXISTIR, TROCAR PARA TELA OPERACOES E CARREGAR O SISTEMA

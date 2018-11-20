@@ -1,11 +1,8 @@
 package InteracaoUsuario;
 
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.stream.Collectors;
-
 import Negocios.GerenciaContas;
 import Negocios.GerenciaOperacoes;
+import Negocios.LogicaOperacoesFachada;
 import Negocios.Operacao;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -30,26 +27,14 @@ public class TelaOperacoes {
 	private Scene cenaEntrada;
 	private Scene cenaOperacoes;
 	private ObservableList<Operacao> operacoesConta;
-//	private Conta conta;
 	private TextField tfValorOperacao;
 	private TextField tfSaldo;
-
-	// ***MUDANÇAS***\\
 	private Label cat;
-	// private String categoria;
 	private double totalSacadoHoje;
-	// ***MUDANÇAS***\\
-
-	/*public TelaOperacoes(Stage mainStage, Scene telaEntrada, Conta conta) { 
-		this.mainStage = mainStage;
-		this.cenaEntrada = telaEntrada;
-		this.conta = conta;
-		totalSacadoHoje = calculaValorSacadoHoje();
-	}*/
+	
 	public TelaOperacoes(Stage mainStage, Scene telaEntrada) { 
 		this.mainStage = mainStage;
 		this.cenaEntrada = telaEntrada;
-//		this.conta = GerenciaContas.getInstance().getContaEmUso();
 	}
 
 
@@ -60,15 +45,12 @@ public class TelaOperacoes {
 		grid.setVgap(10);
 		grid.setPadding(new Insets(25, 25, 25, 25));
 
-		//String dadosCorr = conta.getNumero() + " : " + conta.getCorrentista();
 		String dadosCorr = GerenciaContas.getInstance().getNumeroContaEmUso() + " : " + GerenciaContas.getInstance().getCorrentista();
 		Text scenetitle = new Text(dadosCorr);
 		scenetitle.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
 		grid.add(scenetitle, 0, 0, 2, 1);
 
-		//String categoria = "Categoria: " + conta.getStrStatus();
 		String categoria = "Categoria: " + GerenciaContas.getInstance().getStrStatus();
-		//String limRetDiaria = "Limite retirada diaria: " + conta.getLimRetiradaDiaria();
 		String limRetDiaria = "Limite retirada diaria: " + GerenciaContas.getInstance().getLimRetiradaDiaria();
 
 		cat = new Label(categoria);
@@ -81,7 +63,6 @@ public class TelaOperacoes {
 		grid.add(tit, 0, 3);
 
 		// Seleciona apenas o extrato da conta atual
-		//operacoesConta = FXCollections.observableArrayList(GerenciaOperacoes.getInstance().getOperacoesDaConta(conta.getNumero()));
 		operacoesConta = FXCollections.observableArrayList(GerenciaOperacoes.getInstance().getOperacoesDaConta(GerenciaContas.getInstance().getNumeroContaEmUso()));
 
 		ListView<Operacao> extrato = new ListView<>(operacoesConta);
@@ -122,9 +103,9 @@ public class TelaOperacoes {
 				if (valor < 0.0) {
 					throw new NumberFormatException("Valor invalido");
 				}
-				GerenciaContas.getInstance().deposito(valor);
+				LogicaOperacoesFachada.getInstance().creditaDeposita(valor);
 				operacoesConta.add(GerenciaOperacoes.getInstance().adicionaOP(valor, 0));// ADICIONA NA OBSERVABLE
-				tfSaldo.setText("" + GerenciaContas.getInstance().getSaldo());
+				tfSaldo.setText("" LogicaOperacoesFachada.getInstance());
 			} catch (NumberFormatException ex) {
 				Alert alert = new Alert(AlertType.WARNING);
 				alert.setTitle("Valor inválido !!");
@@ -132,23 +113,19 @@ public class TelaOperacoes {
 				alert.setContentText("Valor inválido para operacao de crédito!!");
 				alert.showAndWait();
 			}
-			// ***MUDANÇAS***\\
+
 			cat.setText("Categoria: " + GerenciaContas.getInstance().getStrStatus());
-			// ***MUDANÇAS***\\
 		});
 
 		btnDebito.setOnAction(e -> {
 			try {
 				double valor = Integer.parseInt(tfValorOperacao.getText());
-//				if (valor < 0.0 || valor > GerenciaContas.getInstance().getSaldo()) // <- teste sendo realizado no GerenciaContas 
-//					throw new NumberFormatException("Saldo insuficiente");
-				// ***MUDANÇAS***\\
 				totalSacadoHoje = GerenciaOperacoes.getInstance().calculaValorSacadoHoje();
 				if (valor + totalSacadoHoje > GerenciaContas.getInstance().getLimRetiradaDiaria()) { //VERIFICANDO onde fazer esse if fora da tela
 					throw new NumberFormatException("O valor :" + valor + " ultrapassa seu limite de saque do dia"
 							+ "\nO total sacado hoje foi dê :" + totalSacadoHoje + "\nSeu limite de saque é dê :"
 							+ GerenciaContas.getInstance().getLimRetiradaDiaria());
-				} // ***MUDANÇAS***\\
+				}
 				GerenciaContas.getInstance().retirada(valor);
 				operacoesConta.add(GerenciaOperacoes.getInstance().adicionaOP(valor, 1));// ADICIONA NA OBSERVABLE
 				tfSaldo.setText("" + GerenciaContas.getInstance().getSaldo());
