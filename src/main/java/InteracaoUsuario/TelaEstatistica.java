@@ -4,7 +4,6 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 import Negocios.Conta;
-import Negocios.GerenciaContas;
 import Negocios.GerenciaOperacoes;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -18,8 +17,8 @@ import javafx.scene.control.DatePicker;
 
 public class TelaEstatistica {
 	private Stage mainStage;
-	private Scene cenaOperacoes;
 	private Scene cenaEstatistica;
+	
 	private Conta conta;
 	private Label lbMes;
 	private Label lbConta;
@@ -33,19 +32,20 @@ public class TelaEstatistica {
 	private DatePicker datePicker;
 	private GregorianCalendar gregorianCalendar;
 
-	/*public TelaEstatistica(Stage mainStage, Scene telaOperacoes, Conta conta) {
-		this.mainStage = mainStage;
-		this.cenaOperacoes = telaOperacoes;
-		this.conta = conta;
+	private static TelaEstatistica instance;
+	private TelaEstatistica() {
 		gregorianCalendar = new GregorianCalendar();
-	}*/
-	
-	public TelaEstatistica(Stage mainStage, Scene telaOperacoes) {
+	}
+	public static TelaEstatistica getInstance() {
+		if(instance == null) return new TelaEstatistica();
+		return instance;
+	}
+	/*public TelaEstatistica(Stage mainStage, Scene telaOperacoes) {
 		this.mainStage = mainStage;
 		this.cenaOperacoes = telaOperacoes;
 		this.conta = GerenciaContas.getInstance().getContaEmUso();
 		gregorianCalendar = new GregorianCalendar();
-	}
+	}*/
 
 	public Scene getTelaEstatistica() {
 		GridPane grid = new GridPane();
@@ -112,7 +112,7 @@ public class TelaEstatistica {
 		grid.add(datePicker, 3, 1);
 		
 		btnVoltar.setOnAction(e -> {
-			mainStage.setScene(cenaOperacoes);
+			mainStage.setScene(TelaOperacoes.getInstance().getTelaOperacoes()); // TELA ESTATIST VOLTA PRA TELA OP
 		});
 		
 		cenaEstatistica = new Scene(grid);

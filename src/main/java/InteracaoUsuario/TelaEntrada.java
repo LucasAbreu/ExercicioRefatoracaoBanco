@@ -23,13 +23,27 @@ import javafx.stage.Stage;
 public class TelaEntrada {
 	private Stage mainStage; 
 	private Scene cenaEntrada; 
+	
 	private TextField tfContaCorrente;
 
-	public TelaEntrada(Stage anStage) {
-		mainStage = anStage;
+	private static TelaEntrada instance;
+	
+	private TelaEntrada() {
+		
+	}
+	public static TelaEntrada getInstance() {
+		if (instance == null) return new TelaEntrada();
+		return instance;
 	}
 
+	public void setMainStage(Stage palco) {
+		mainStage = palco;
+		if(palco == null) System.out.println("PALCO CHEGOU NULL NA TELA ENTRADA");
+		if(mainStage == null) System.out.println("MAIN STAGE FICOU NULL NA TELA ENTRADA");
+		System.out.println("palco setado");
+	}
 	public Scene getTelaEntrada() {
+		
 		GridPane grid = new GridPane();
 		grid.setAlignment(Pos.CENTER);
 		grid.setHgap(10);
@@ -69,14 +83,16 @@ public class TelaEntrada {
 				//5 questoes factory, decorate, strategy, ideia de camada de negocios JML 
 				Integer nroConta = Integer.parseInt(tfContaCorrente.getText());
 				if (LogicaOperacoesFachada.getInstance().verificaSeContaExiste(nroConta) == false) {
+					System.out.println("XABLAU 1");
 					throw new NumberFormatException("Conta invalida");
 				}
 				// CASO EXISTIR, TROCAR PARA TELA OPERACOES E CARREGAR O SISTEMA
 				// Transformar o parâmetro "conta" na conta atual na camada de negócio
 				GerenciaContas.getInstance().setContaEmUso(nroConta); // SET CONTA EM USO
-				TelaOperacoes toper = new TelaOperacoes(mainStage, cenaEntrada);
-				Scene scene = toper.getTelaOperacoes();
-				mainStage.setScene(scene);
+				System.out.println("XABLAU 2");
+				if(mainStage == null) System.out.println("mainStage é null");
+				mainStage.setScene(TelaOperacoes.getInstance().getTelaOperacoes());
+				System.out.println("XABLAU FOI");
 			} catch (NumberFormatException ex) {
 				Alert alert = new Alert(AlertType.WARNING);
 				alert.setTitle("Conta inválida !!");

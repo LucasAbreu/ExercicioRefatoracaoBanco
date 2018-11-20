@@ -1,5 +1,4 @@
 package Negocios;
- import java.util.ArrayList;
 import java.util.Map;
 
 import Persistencia.Persistencia;
@@ -12,7 +11,7 @@ import Persistencia.Persistencia;
  		this.loadContas(Persistencia.getInstance().loadContas());
 	}
 	
-	static public GerenciaContas getInstance() {
+	public static GerenciaContas getInstance() {
 		if(instance == null) {
 			instance = new GerenciaContas();
 		}

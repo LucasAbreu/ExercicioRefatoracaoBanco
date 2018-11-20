@@ -24,17 +24,26 @@ import javafx.stage.Stage;
 
 public class TelaOperacoes {
 	private Stage mainStage;
-	private Scene cenaEntrada;
 	private Scene cenaOperacoes;
+	
 	private ObservableList<Operacao> operacoesConta;
 	private TextField tfValorOperacao;
 	private TextField tfSaldo;
 	private Label cat;
 	private double totalSacadoHoje;
 	
-	public TelaOperacoes(Stage mainStage, Scene telaEntrada) { 
-		this.mainStage = mainStage;
-		this.cenaEntrada = telaEntrada;
+	private static TelaOperacoes instance;
+	
+	private TelaOperacoes() {
+		System.out.println("CONSTRUTOR PRIVADO TELA OP");
+	}
+	public static TelaOperacoes getInstance() {
+		if(instance == null) { 
+			System.out.println("NOVA INSTANCIA CONSTRUTOR PUBLICO TELA OP");
+			return new TelaOperacoes(); 
+		}
+		System.out.println("VELHA INSTANCIA CONSTRUTOR PUBLICO TELA OP");
+		return instance;
 	}
 
 
@@ -103,9 +112,9 @@ public class TelaOperacoes {
 				if (valor < 0.0) {
 					throw new NumberFormatException("Valor invalido");
 				}
-				LogicaOperacoesFachada.getInstance().creditaDeposita(valor);
+				LogicaOperacoesFachada.getInstance().creditaDeposita( valor,(GerenciaContas.getInstance().getContaEmUso()) );
 				operacoesConta.add(GerenciaOperacoes.getInstance().adicionaOP(valor, 0));// ADICIONA NA OBSERVABLE
-				tfSaldo.setText("" LogicaOperacoesFachada.getInstance());
+				tfSaldo.setText(""+LogicaOperacoesFachada.getInstance().getSaldoConta((GerenciaContas.getInstance().getContaEmUso())));
 			} catch (NumberFormatException ex) {
 				Alert alert = new Alert(AlertType.WARNING);
 				alert.setTitle("Valor inválido !!");
@@ -113,7 +122,6 @@ public class TelaOperacoes {
 				alert.setContentText("Valor inválido para operacao de crédito!!");
 				alert.showAndWait();
 			}
-
 			cat.setText("Categoria: " + GerenciaContas.getInstance().getStrStatus());
 		});
 
@@ -144,8 +152,7 @@ public class TelaOperacoes {
 		// Botao Estatistica
 		btnEstatistica.setOnAction(e -> {
 			try {
-				TelaEstatistica telaEstatistica = new TelaEstatistica(mainStage, cenaOperacoes);
-				Scene scene = telaEstatistica.getTelaEstatistica();
+				Scene scene = TelaEstatistica.getInstance().getTelaEstatistica();
 				mainStage.setScene(scene);
 			} catch (NumberFormatException ex) {
 				Alert alert = new Alert(AlertType.WARNING);
@@ -157,7 +164,7 @@ public class TelaOperacoes {
 		});
 
 		btnVoltar.setOnAction(e -> {
-			mainStage.setScene(cenaEntrada);
+			mainStage.setScene(TelaEntrada.getInstance().getTelaEntrada()); // TELA OP VOLTA PRA TELA ENTRADA
 		});
 
 		cenaOperacoes = new Scene(grid);

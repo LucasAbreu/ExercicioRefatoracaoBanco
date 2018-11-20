@@ -6,24 +6,21 @@ import Persistencia.Persistencia;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
-
 public class App extends Application {
-	private Persistencia persistencia;
-	GerenciaContas gerenciaContas;
-	//private Map<Integer,Conta> contas;
 	
-	private TelaEntrada telaEntrada;
+	private Persistencia persistencia;
 	
     @Override
     public void start(Stage primaryStage) {
     	persistencia = Persistencia.getInstance();
-        //contas = persistencia.loadContas();    	
     		
     	primaryStage.setTitle("$$ Banco NOSSA GRANA $$");
-
-    	telaEntrada = new TelaEntrada(primaryStage); // << Substituir por singleton
-
-        primaryStage.setScene(telaEntrada.getTelaEntrada());
+    	
+    	System.out.println("ANTES DE SETAR O PALCO");
+        TelaEntrada.getInstance().setMainStage(primaryStage);
+        System.out.println("DEPOIS DE SETAR O PALCO");
+        
+        primaryStage.setScene(TelaEntrada.getInstance().getTelaEntrada());
         primaryStage.show();
     }
     
