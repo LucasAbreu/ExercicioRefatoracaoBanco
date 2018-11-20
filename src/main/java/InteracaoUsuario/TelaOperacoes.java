@@ -2,7 +2,7 @@ package InteracaoUsuario;
 
 import Negocios.GerenciaContas;
 import Negocios.GerenciaOperacoes;
-import Negocios.LogicaOperacoesFachada;
+import Negocios.Fachada;
 import Negocios.Operacao;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -116,10 +116,10 @@ public class TelaOperacoes {
 				if (valor < 0.0) {
 					throw new NumberFormatException("Valor invalido");
 				}
-				LogicaOperacoesFachada.getInstance().creditaDeposita(valor,
+				Fachada.getInstance().creditaDeposita(valor,
 						(GerenciaContas.getInstance().getContaEmUso()));
 				operacoesConta.add(GerenciaOperacoes.getInstance().adicionaOP(valor, 0));// ADICIONA NA OBSERVABLE
-				tfSaldo.setText("" + LogicaOperacoesFachada.getInstance()
+				tfSaldo.setText("" + Fachada.getInstance()
 						.getSaldoConta((GerenciaContas.getInstance().getContaEmUso())));
 			} catch (NumberFormatException ex) {
 				Alert alert = new Alert(AlertType.WARNING);

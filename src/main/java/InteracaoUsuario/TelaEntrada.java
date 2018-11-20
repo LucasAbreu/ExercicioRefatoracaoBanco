@@ -1,7 +1,7 @@
 package InteracaoUsuario;
 
 import Negocios.GerenciaContas;
-import Negocios.LogicaOperacoesFachada;
+import Negocios.Fachada;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -80,25 +80,19 @@ public class TelaEntrada {
 			try {
 				// 5 questoes factory, decorate, strategy, ideia de camada de negocios JML
 				Integer nroConta = Integer.parseInt(tfContaCorrente.getText());
-				if (LogicaOperacoesFachada.getInstance().verificaSeContaExiste(nroConta) == false) {
+				if (!Fachada.getInstance().entrar(nroConta)) {
 					throw new NumberFormatException("Conta invalida");
 				}
-				// CASO EXISTIR, TROCAR PARA TELA OPERACOES E CARREGAR O SISTEMA
-				// Transformar o parâmetro "conta" na conta atual na camada de negócio
-				GerenciaContas.getInstance().setContaEmUso(nroConta); // SET CONTA EM USO
-			
+
 				TelaOperacoes telaOperacoes = TelaOperacoes.getInstance();
 				telaOperacoes.setMainStage(mainStage);
 				Scene scene = telaOperacoes.getTelaOperacoes();
 				mainStage.setScene(scene);
-				
-				//mainStage.setScene(TelaOperacoes.getInstance().getTelaOperacoes());
-			
 			} catch (NumberFormatException ex) {
 				Alert alert = new Alert(AlertType.WARNING);
 				alert.setTitle("Conta inválida !!");
 				alert.setHeaderText(null);
-				alert.setContentText("Número de conta inválido!!");
+				alert.setContentText("Número de conta inválido!! ");
 				alert.showAndWait();
 			}
 		});

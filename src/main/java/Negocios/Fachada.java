@@ -1,23 +1,26 @@
 package Negocios;
 
-public class LogicaOperacoesFachada {
+public class Fachada {
 
-	private static LogicaOperacoesFachada instance;
+	private static Fachada instance;
 
-	private LogicaOperacoesFachada() {
+	private Fachada() {
 
 	}
 
-	public static LogicaOperacoesFachada getInstance() {
+	public static Fachada getInstance() {
 		if (instance == null) {
-			return new LogicaOperacoesFachada();
+			return new Fachada();
 		}
 		return instance;
 	}
 
-	public boolean verificaSeContaExiste(int numeroConta) {
-		return GerenciaContas.getInstance().getListaContas().get(numeroConta) != null;
-		// RETORNA TRUE SE EXISTE FALSE SE NÃO EXSITE
+	public boolean entrar(int numeroConta) {
+		if (GerenciaContas.getInstance().getListaContas().get(numeroConta) != null) {
+			GerenciaContas.getInstance().setContaEmUso(numeroConta);
+			return true;
+		}
+		return false;
 	}
 
 	public void creditaDeposita(double valor, Conta conta) {
@@ -34,7 +37,7 @@ public class LogicaOperacoesFachada {
 		// RETORNA O SALDO DA CONTA DO PARAMETRO
 	}
 
-	public double getSaldoMedioConta(Conta conta,int mes, int ano) {
+	public double getSaldoMedioConta(Conta conta, int mes, int ano) {
 		return GerenciaOperacoes.getInstance().calculaSaldoMedioNoMes(conta, mes, ano);
 	}
 
