@@ -1,7 +1,6 @@
 package InteracaoUsuario;
 
-import Negocios.GerenciaContas;
-import Negocios.GerenciaOperacoes;
+
 import Negocios.Fachada;
 import Negocios.Operacao;
 import javafx.collections.FXCollections;
@@ -30,7 +29,6 @@ public class TelaOperacoes {
 	private TextField tfValorOperacao;
 	private TextField tfSaldo;
 	private Label cat;
-	private double totalSacadoHoje;
 
 	private static TelaOperacoes instance;
 
@@ -56,14 +54,13 @@ public class TelaOperacoes {
 		grid.setVgap(10);
 		grid.setPadding(new Insets(25, 25, 25, 25));
 
-		String dadosCorr = GerenciaContas.getInstance().getNumeroContaEmUso() + " : "
-				+ GerenciaContas.getInstance().getCorrentista();
+		String dadosCorr = Fachada.getInstance().getStringDadosConrrentista();
 		Text scenetitle = new Text(dadosCorr);
 		scenetitle.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
 		grid.add(scenetitle, 0, 0, 2, 1);
 
-		String categoria = "Categoria: " + GerenciaContas.getInstance().getStrStatus();
-		String limRetDiaria = "Limite retirada diaria: " + GerenciaContas.getInstance().getLimRetiradaDiaria();
+		String categoria = "Categoria: "+Fachada.getInstance().getStrgCategoriaConta();
+		String limRetDiaria = "Limite retirada diaria: "+Fachada.getInstance().getLimiteRetiradaConta();
 
 		cat = new Label(categoria);
 		grid.add(cat, 0, 1);
@@ -75,8 +72,7 @@ public class TelaOperacoes {
 		grid.add(tit, 0, 3);
 
 		// Seleciona apenas o extrato da conta atual
-		operacoesConta = FXCollections.observableArrayList(GerenciaOperacoes.getInstance()
-				.getOperacoesDaConta(GerenciaContas.getInstance().getNumeroContaEmUso()));
+		operacoesConta = FXCollections.observableArrayList(Fachada.getInstance().getListaOpConta());// CONTA EM USO
 
 		ListView<Operacao> extrato = new ListView<>(operacoesConta);
 		extrato.setPrefHeight(140);
@@ -84,7 +80,7 @@ public class TelaOperacoes {
 
 		tfSaldo = new TextField();
 		tfSaldo.setDisable(true);
-		tfSaldo.setText("" + GerenciaContas.getInstance().getSaldo());
+		tfSaldo.setText(""+Fachada.getInstance().getSaldoConta());
 		HBox valSaldo = new HBox(20);
 		valSaldo.setAlignment(Pos.BOTTOM_LEFT);
 		valSaldo.getChildren().add(new Label("Saldo"));
@@ -113,15 +109,10 @@ public class TelaOperacoes {
 		btnCredito.setOnAction(e -> {
 			try {
 				double valor = Integer.parseInt(tfValorOperacao.getText());
-				if (!Fachada.getInstance().credito(valor, GerenciaContas.getInstance().getContaEmUso())) {
-					throw new NumberFormatException("Valor invalido");
-				}
-
-				operacoesConta.add(GerenciaOperacoes.getInstance().adicionaOP(valor, 0));// ADICIONA NA OBSERVABLE
-				tfSaldo.setText(
-						"" + Fachada.getInstance().getSaldoConta((GerenciaContas.getInstance().getContaEmUso())));
-				cat.setText("Categoria: " + GerenciaContas.getInstance().getStrStatus());
-
+				Fachada.getInstance().credito(valor);
+				extrato.setItems(FXCollections.observableArrayList(Fachada.getInstance().getListaOpConta())); // ATUALIZA LIST OBSERVABLE
+				tfSaldo.setText(""+Fachada.getInstance().getSaldoConta()); // SALDO CONTA ATUAL
+				cat.setText("Categoria: "+Fachada.getInstance().getStrgCategoriaConta());
 			} catch (NumberFormatException ex) {
 				Alert alert = new Alert(AlertType.WARNING);
 				alert.setTitle("Valor inválido !!");
@@ -134,36 +125,27 @@ public class TelaOperacoes {
 		btnDebito.setOnAction(e -> {
 			try {
 				double valor = Integer.parseInt(tfValorOperacao.getText());
-				if (!Fachada.getInstance().debito(valor, GerenciaContas.getInstance().getContaEmUso())) {
-					throw new NumberFormatException("O valor :" + valor + " ultrapassa seu limite de saque do dia"
-							+ "\nO total sacado hoje foi dê :" + totalSacadoHoje + "\nSeu limite de saque é dê :"
-							+ GerenciaContas.getInstance().getLimRetiradaDiaria());
-				}
-
-				operacoesConta.add(GerenciaOperacoes.getInstance().adicionaOP(valor, 1));// ADICIONA NA OBSERVABLE
-				tfSaldo.setText("" + GerenciaContas.getInstance().getSaldo());
-				cat.setText("Categoria: " + GerenciaContas.getInstance().getStrStatus());
-
+				Fachada.getInstance().debito(valor);
+				extrato.setItems(FXCollections.observableArrayList(Fachada.getInstance().getListaOpConta())); // ATUALIZA LIST OBSERVABLE
+				tfSaldo.setText(""+Fachada.getInstance().getSaldoConta()); // SALDO CONTA ATUAL
+				cat.setText("Categoria: "+Fachada.getInstance().getStrgCategoriaConta());
 			} catch (NumberFormatException ex) {
 				Alert alert = new Alert(AlertType.WARNING);
 				alert.setTitle("Valor inválido !!");
 				alert.setHeaderText(null);
-				alert.setContentText(ex.getMessage());// ***MUDANÇAS***\\
+				alert.setContentText(ex.getMessage());
 				alert.showAndWait();
 			}
 		});
 
-		// Botao Estatistica
-		btnEstatistica.setOnAction(e -> {
+		btnEstatistica.setOnAction(e -> { // VAI PARA TELA ESTATISTICA
 			TelaEstatistica telaEstatistica = TelaEstatistica.getInstance();
 			telaEstatistica.setMainStage(mainStage);
 			Scene scene = telaEstatistica.getTelaEstatistica();
 			mainStage.setScene(scene);
 		});
 
-		btnVoltar.setOnAction(e -> {
-			// mainStage.setScene(TelaEntrada.getInstance().getTelaEntrada()); // TELA OP
-			// VOLTA PRA TELA ENTRADA
+		btnVoltar.setOnAction(e -> { // VOLTA PRA TELA ENTRADA
 			TelaEntrada telaEntrada = TelaEntrada.getInstance();
 			telaEntrada.setMainStage(mainStage);
 			Scene scene = telaEntrada.getTelaEntrada();

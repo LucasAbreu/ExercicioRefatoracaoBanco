@@ -23,7 +23,6 @@ public class Persistencia {
     
     private Persistencia() {
     	// conteudo do construtor
-    	
     }
     
     public static Persistencia getInstance() {

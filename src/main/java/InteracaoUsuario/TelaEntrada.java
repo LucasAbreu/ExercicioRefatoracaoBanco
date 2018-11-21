@@ -1,6 +1,5 @@
 package InteracaoUsuario;
 
-import Negocios.GerenciaContas;
 import Negocios.Fachada;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -79,11 +78,8 @@ public class TelaEntrada {
 		btnIn.setOnAction(e -> {
 			try {
 				// 5 questoes factory, decorate, strategy, ideia de camada de negocios JML
-				Integer nroConta = Integer.parseInt(tfContaCorrente.getText());
-				if (!Fachada.getInstance().entrar(nroConta)) {
-					throw new NumberFormatException("Conta invalida");
-				}
-
+				Integer numeroConta = Integer.parseInt(tfContaCorrente.getText());
+				Fachada.getInstance().entrar(numeroConta); // VERIFICA LOGIN PELA FACHADA
 				TelaOperacoes telaOperacoes = TelaOperacoes.getInstance();
 				telaOperacoes.setMainStage(mainStage);
 				Scene scene = telaOperacoes.getTelaOperacoes();
