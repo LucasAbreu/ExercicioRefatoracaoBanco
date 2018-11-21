@@ -17,7 +17,7 @@ import javafx.scene.control.DatePicker;
 
 public class TelaEstatistica {
 	private static TelaEstatistica instance;
-	
+
 	private Stage mainStage;
 	private Scene cenaEstatistica;
 	private Label lbMes;
@@ -31,8 +31,6 @@ public class TelaEstatistica {
 	private TextField tfRetirada;
 	private DatePicker datePicker;
 	private GregorianCalendar gregorianCalendar;
-
-	
 
 	private TelaEstatistica() {
 		gregorianCalendar = new GregorianCalendar();
@@ -55,34 +53,34 @@ public class TelaEstatistica {
 		grid.setHgap(10);
 		grid.setVgap(10);
 		grid.setPadding(new Insets(25, 25, 25, 25));
-		
-		//AUXILIAR LOCAL DIMINUIR TAMANHO LINHAS//////////////////////////////
+
+		// AUXILIAR LOCAL DIMINUIR TAMANHO LINHAS//////////////////////////////
 		Conta contaEmUso = Fachada.getInstance().getContaEmUso();
 		int mesHoje = gregorianCalendar.get(Calendar.MONTH) + 1;
 		int anoHoje = gregorianCalendar.get(Calendar.YEAR);
-		//AUXILIAR LOCAL DIMINUIR TAMANHO LINHAS//////////////////////////////
-		
+		// AUXILIAR LOCAL DIMINUIR TAMANHO LINHAS//////////////////////////////
+
 		String c = "Conta: ";
 		lbConta = new Label(c);
 		grid.add(lbConta, 0, 1);
-		
+
 		tfConta = new TextField();
-		tfConta.setText(""+Fachada.getInstance().getContaEmUso().getNumero());
+		tfConta.setText("" + Fachada.getInstance().getContaEmUso().getNumero());
 		tfConta.setEditable(false);
 		grid.add(tfConta, 1, 1);
-		
+
 		String mes = "Mes: ";
 		lbMes = new Label(mes);
 		lbMes.setMinWidth(Label.USE_PREF_SIZE);
 		grid.add(lbMes, 2, 1);
-		
+
 		String saldoMedio = "Saldo Medio: ";
 		lbSaldo = new Label(saldoMedio);
 		lbSaldo.setMinWidth(Label.USE_PREF_SIZE);
 		grid.add(lbSaldo, 0, 2);
 
 		tfSaldo = new TextField();
-		tfSaldo.setText(""+Fachada.getInstance().getSaldoMedioConta(contaEmUso,mesHoje,anoHoje));
+		tfSaldo.setText("" + Fachada.getInstance().getSaldoMedioConta(contaEmUso, mesHoje, anoHoje));
 		tfSaldo.setEditable(false);
 		grid.add(tfSaldo, 1, 2);
 
@@ -92,7 +90,7 @@ public class TelaEstatistica {
 		grid.add(lbDeposito, 0, 3);
 
 		tfDeposito = new TextField();
-		tfDeposito.setText(""+Fachada.getInstance().getTotalDepositosConta(contaEmUso,mesHoje,anoHoje));
+		tfDeposito.setText("" + Fachada.getInstance().getTotalDepositosConta(contaEmUso, mesHoje, anoHoje));
 		tfDeposito.setEditable(false);
 		grid.add(tfDeposito, 1, 3);
 
@@ -102,7 +100,7 @@ public class TelaEstatistica {
 		grid.add(lbRetirado, 0, 4);
 
 		tfRetirada = new TextField();
-		tfRetirada.setText(""+Fachada.getInstance().getTotalRetiradasConta(contaEmUso,mesHoje,anoHoje));
+		tfRetirada.setText("" + Fachada.getInstance().getTotalRetiradasConta(contaEmUso, mesHoje, anoHoje));
 		tfRetirada.setEditable(false);
 		grid.add(tfRetirada, 1, 4);
 
@@ -113,9 +111,11 @@ public class TelaEstatistica {
 		datePicker.setOnAction(e -> {
 			int mesDatePicker = datePicker.getValue().getMonthValue();
 			int anoDatePicker = datePicker.getValue().getYear();
-			tfSaldo.setText(""+Fachada.getInstance().getSaldoMedioConta(contaEmUso,mesDatePicker,anoDatePicker));
-			tfDeposito.setText(""+Fachada.getInstance().getTotalRetiradasConta(contaEmUso,mesDatePicker,anoDatePicker));
-			tfRetirada.setText(""+Fachada.getInstance().getTotalDepositosConta(contaEmUso,mesDatePicker,anoDatePicker));
+			tfSaldo.setText("" + Fachada.getInstance().getSaldoMedioConta(contaEmUso, mesDatePicker, anoDatePicker));
+			tfDeposito.setText(
+					"" + Fachada.getInstance().getTotalRetiradasConta(contaEmUso, mesDatePicker, anoDatePicker));
+			tfRetirada.setText(
+					"" + Fachada.getInstance().getTotalDepositosConta(contaEmUso, mesDatePicker, anoDatePicker));
 		});
 		grid.add(datePicker, 3, 1);
 
@@ -125,7 +125,7 @@ public class TelaEstatistica {
 			Scene scene = telaOperacoes.getTelaOperacoes();
 			mainStage.setScene(scene);
 		});
-	
+
 		cenaEstatistica = new Scene(grid);
 		return cenaEstatistica;
 	}

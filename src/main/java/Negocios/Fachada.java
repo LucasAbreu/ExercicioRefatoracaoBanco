@@ -24,7 +24,7 @@ public class Fachada {
 	}
 
 	public boolean credito(double valor, Conta conta) {
-		if(valor > 0 && conta != null) {
+		if (valor > 0 && conta != null) {
 			GerenciaContas.getInstance().getListaContas().get(conta.getNumero()).deposito(valor);
 			return true;
 		}
@@ -41,8 +41,7 @@ public class Fachada {
 	}
 
 	public double getSaldoConta(Conta conta) {
-		return (GerenciaContas.getInstance().getListaContas().get(conta.getNumero())).getSaldo();
-		// RETORNA O SALDO DA CONTA DO PARAMETRO
+		return GerenciaContas.getInstance().getListaContas().get(conta.getNumero()).getSaldo();
 	}
 
 	public double getSaldoMedioConta(Conta conta, int mes, int ano) {
