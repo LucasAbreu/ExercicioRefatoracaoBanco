@@ -2,8 +2,7 @@ package Negocios;
 
 public interface StateConta {
 	public String getStrStatus();
+	public int getStatus();
 	public double getLimRetiradaDiaria();
-	public void deposito(double valor);
-	public void retirada(double valor);
-	
+	public double creditoDeposito(double value);
 }
