@@ -1,32 +1,32 @@
 package Negocios;
 
 public class Conta {
-	public final int SILVER = 0;
-	public final int GOLD = 1;
-	public final int PLATINUM = 2;
-	public final int LIM_SILVER_GOLD = 50000;
-	public final int LIM_GOLD_PLATINUM = 200000;
-	public final int LIM_PLATINUM_GOLD = 100000;
-	public final int LIM_GOLD_SILVER = 25000;
+	private final int SILVER = 0;
+	private final int GOLD = 1;
+	private final int PLATINUM = 2;
+	private final int LIM_SILVER_GOLD = 50000;
+	private final int LIM_GOLD_PLATINUM = 200000;
+	private final int LIM_PLATINUM_GOLD = 100000;
+	private final int LIM_GOLD_SILVER = 25000;
 
 	private int numero;
 	private String correntista;
 	private double saldo;
-	public StateConta state;
+	public IStateConta state;
 
 	public Conta(int umNumero, String umNome) {
 		super();
 		numero = umNumero;
 		correntista = umNome;
 		saldo = 0.0;
-		state = FactoryConta.getInstance().novaConta(SILVER);
+		state = FactoryStateConta.getInstance().novaConta(SILVER);
 	}
 
 	public Conta(int numero, String correntista, double saldo, int state) {
 		this.numero = numero;
 		this.correntista = correntista;
 		this.saldo = saldo;
-		this.state = FactoryConta.getInstance().novaConta(state);
+		this.state = FactoryStateConta.getInstance().novaConta(state);
 	}
 
 	public double getSaldo() {
@@ -57,12 +57,12 @@ public class Conta {
 		if (state.getStatus() == SILVER) {
 			saldo += state.creditoDeposito(valor);
 			if (saldo >= LIM_SILVER_GOLD) {
-				state = FactoryConta.getInstance().novaConta(GOLD);
+				state = FactoryStateConta.getInstance().novaConta(GOLD);
 			}
 		} else if (state.getStatus() == GOLD) {
 			saldo += state.creditoDeposito(valor);
 			if (saldo >= LIM_GOLD_PLATINUM) {
-				state = FactoryConta.getInstance().novaConta(PLATINUM);
+				state = FactoryStateConta.getInstance().novaConta(PLATINUM);
 			}
 		} else if (state.getStatus() == PLATINUM) {
 			saldo += state.creditoDeposito(valor);
@@ -76,11 +76,11 @@ public class Conta {
 			saldo = saldo - valor;
 			if (state.getStatus() == PLATINUM) {
 				if (saldo < LIM_PLATINUM_GOLD) {
-					state = FactoryConta.getInstance().novaConta(GOLD);
+					state = FactoryStateConta.getInstance().novaConta(GOLD);
 				}
 			} else if (state.getStatus() == GOLD) {
 				if (saldo < LIM_GOLD_SILVER) {
-					state = FactoryConta.getInstance().novaConta(SILVER);
+					state = FactoryStateConta.getInstance().novaConta(SILVER);
 				}
 			}
 		}

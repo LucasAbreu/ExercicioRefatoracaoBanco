@@ -1,6 +1,6 @@
 package Negocios;
 
-public interface StateConta {
+public interface IStateConta {
 	public String getStrStatus();
 	public int getStatus();
 	public double getLimRetiradaDiaria();

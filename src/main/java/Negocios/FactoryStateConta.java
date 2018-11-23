@@ -1,20 +1,20 @@
 package Negocios;
 
-public class FactoryConta {
-	private static FactoryConta instance;
+public class FactoryStateConta {
+	private static FactoryStateConta instance;
 
-	private FactoryConta() {
+	private FactoryStateConta() {
 
 	}
 
-	public static FactoryConta getInstance() {
+	public static FactoryStateConta getInstance() {
 		if (instance == null) {
-			instance = new FactoryConta();
+			instance = new FactoryStateConta();
 		}
 		return instance;
 	}
 
-	public StateConta novaConta(int tipo) {
+	public IStateConta novaConta(int tipo) {
 		switch (tipo) {
 		case 0:
 			return new Silver();
@@ -27,7 +27,7 @@ public class FactoryConta {
 		}
 	}
 
-	class Silver implements StateConta {
+	class Silver implements IStateConta {
 		private final int STATUS = 0;
 		private final int LIM_SILVER_SAQUE = 5000;
 
@@ -52,7 +52,7 @@ public class FactoryConta {
 		}
 	}
 
-	class Gold implements StateConta {
+	class Gold implements IStateConta {
 		private final int STATUS = 1;
 		private final int LIM_GOLD_SAQUE = 50000;
 
@@ -77,7 +77,7 @@ public class FactoryConta {
 		}
 	}
 
-	class Platinum implements StateConta {
+	class Platinum implements IStateConta {
 		private final int STATUS = 2;
 		private final int LIM_PLATINUM_SAQUE = 500000;
 
