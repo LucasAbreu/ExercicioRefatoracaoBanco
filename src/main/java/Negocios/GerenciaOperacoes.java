@@ -149,10 +149,20 @@ public class GerenciaOperacoes {
 
 	public void adicionaOP(double valor, int tipo) { // tipo "0" para CREDITO, "1" para DEBITO
 		GregorianCalendar date = new GregorianCalendar();
-		Operacao op = new Operacao(date.get(GregorianCalendar.DAY_OF_MONTH),
-				((int) date.get(GregorianCalendar.MONTH)) + 1, date.get(GregorianCalendar.YEAR),
-				date.get(GregorianCalendar.HOUR), date.get(GregorianCalendar.MINUTE),
-				date.get(GregorianCalendar.SECOND), GerenciaContas.getInstance().getContaEmUso().getNumero(), GerenciaContas.getInstance().getContaEmUso().getStatus(), valor, tipo);
+		////////// MODIFICADO A PARTIR DAQUI ////////////
+		Operacao op;
+		if(tipo == 0)
+			op = FactoryOperacoes.getInstance().depositar(GerenciaContas.getInstance().getContaEmUso().getNumero(), 
+					GerenciaContas.getInstance().getContaEmUso().getStatus(), valor);
+		else {
+			op = FactoryOperacoes.getInstance().sacar(GerenciaContas.getInstance().getContaEmUso().getNumero(),
+					GerenciaContas.getInstance().getContaEmUso().getStatus(), valor);
+		}
+		////////// MODIFICADO ATE AQUI ////////////
+//		Operacao op = new Operacao(date.get(GregorianCalendar.DAY_OF_MONTH),
+//				((int) date.get(GregorianCalendar.MONTH)) + 1, date.get(GregorianCalendar.YEAR),
+//				date.get(GregorianCalendar.HOUR), date.get(GregorianCalendar.MINUTE),
+//				date.get(GregorianCalendar.SECOND), GerenciaContas.getInstance().getContaEmUso().getNumero(), GerenciaContas.getInstance().getContaEmUso().getStatus(), valor, tipo);
 		operacoes.add(op);// ADICIONA A OP NA LISTA DE OP's
 	}
 
