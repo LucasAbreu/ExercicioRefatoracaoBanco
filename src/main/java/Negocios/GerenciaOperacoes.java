@@ -27,6 +27,10 @@ public class GerenciaOperacoes {
 	public List<Operacao> getOperacoes() {
 		return operacoes;
 	}
+	
+	public void setOperacoes(List<Operacao> operacoes) {
+		this.operacoes = operacoes;
+	}
 
 	/////////////////////////////// MÉTODOS SOBRE A LISTA DE OPERACOES
 	/////////////////////////////// ////////////////////////////////////////
