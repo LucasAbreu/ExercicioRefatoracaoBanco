@@ -72,9 +72,9 @@ class GerenciaOperacoesTest {
 		"11, 2018, 20" 
 	})
 	public void testCalculaRetiradaNoMes(int mes, int ano, double saqueEsperado) {
-		double saque = gerenciaOperacoes.calculaRetiradaNoMes(mockGerenciaContas.getContaEmUso(), mes, ano);
-		assertEquals(saque, saque, 0.001); 
-		//assertEquals(saqueEsperado, saque, 0.001);
+		gerenciaOperacoes.setOperacoes(mockPersistencia.loadOperacoes());
+		double saque = gerenciaOperacoes.calculaRetiradaNoMes(mockGerenciaContas.getContaEmUso(), mes, ano); 
+		assertEquals(saqueEsperado, saque, 0.001);
 	}
 
 	@DisplayName("Testa deposito no mes")
@@ -83,9 +83,9 @@ class GerenciaOperacoesTest {
 		"11, 2018, 40" 
 	})
 	public void testCalculaDepositoNoMes(int mes, int ano, double depositoEsperado) {
+		gerenciaOperacoes.setOperacoes(mockPersistencia.loadOperacoes());
 		double deposito = gerenciaOperacoes.calculaDepositoNoMes(mockGerenciaContas.getContaEmUso(), mes, ano);
-		assertEquals(deposito, deposito, 0.001);
-		//assertEquals(depositoEsperado, deposito, 0.001);
+		assertEquals(depositoEsperado, deposito, 0.001);
 	}
 
 }
