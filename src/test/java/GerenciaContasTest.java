@@ -1,11 +1,10 @@
 import org.junit.jupiter.api.BeforeEach;
 
-class GerenciaContasTest {
-	private GerenciaContasTest gerenciaContasTest;
+import Negocios.Conta;
 
-	@BeforeEach
-	public void inicializa() {
-		gerenciaContasTest = new GerenciaContasTest();
-	}
+class GerenciaContasTest {
+	private Conta conta;
+
+	
 
 }
