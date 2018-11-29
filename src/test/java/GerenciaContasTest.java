@@ -52,5 +52,34 @@ class GerenciaContasTest {
 		assertEquals(0, gc.getStatus());
 	}
 	
+	@DisplayName("Testa deposito")
+	@ParameterizedTest
+	@CsvSource({"10, 10, 20, 0, 0", 
+				"20000, 40000, 60000, 0, 1",
+				"80000, 130000, 211300, 1, 2",
+				"200000, 100000, 302500, 2, 2"
+	})
+	public void testeDeposito(double saldo, double valorDepositado, double saldoFinal, int stateInit, int stateFinal) throws Exception {
+		gc.criaConta(3, "Ciclano", saldo, stateInit);
+		gc.setContaEmUso(3);
+		gc.deposito(valorDepositado);
+		assertEquals(stateFinal, gc.getStatus());
+		assertEquals(saldoFinal, gc.getSaldo());
+	}
+	
+	@DisplayName("Testa deposito")
+	@ParameterizedTest
+	@CsvSource({"10, 10, 0, 0, 0", 
+				"120000, 30000, 90000, 2, 1",
+				"30000, 10000, 20000, 1, 0",
+	})
+
+	public void testeSaque(double saldo, double valorRetirado, double saldoFinal, int stateInit, int stateFinal) throws Exception {
+		gc.criaConta(3, "Ciclano", saldo, stateInit);
+		gc.setContaEmUso(3);
+		gc.retirada(valorRetirado);
+		assertEquals(stateFinal, gc.getStatus());
+		assertEquals(saldoFinal, gc.getSaldo());
+	}
 	
 }
