@@ -29,7 +29,7 @@ public class FactoryStateConta {
 
 	class Silver implements IStateConta {
 		private final int STATUS = 0;
-		private final int LIM_SILVER_SAQUE = 5000;
+		private final int LIM_SILVER_SAQUE = 10000;
 
 		@Override
 		public String getStrStatus() {
@@ -54,7 +54,7 @@ public class FactoryStateConta {
 
 	class Gold implements IStateConta {
 		private final int STATUS = 1;
-		private final int LIM_GOLD_SAQUE = 50000;
+		private final int LIM_GOLD_SAQUE = 100000;
 
 		@Override
 		public String getStrStatus() {
