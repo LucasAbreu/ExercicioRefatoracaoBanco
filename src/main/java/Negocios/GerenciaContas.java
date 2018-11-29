@@ -28,6 +28,9 @@ import Persistencia.Persistencia;
 		this.listaContas = listaContas;
 	}
 	
+	public void setContas(Map<Integer,Conta> listaContas) {
+		this.listaContas = listaContas;
+	}
 	public Map<Integer,Conta> getListaContas(){ 
 		return this.listaContas;
 	}
@@ -55,6 +58,7 @@ import Persistencia.Persistencia;
 	
 	public void apagaConta(int conta) {
 		this.listaContas.remove(conta);
+		
 	}
 	
 	public void deposito(double valor,Conta account){
